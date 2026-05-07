@@ -1,0 +1,789 @@
+
+
+--- PAGE 1 ---
+
+OptiWork – Optimized workforce management
+Version 1.0
+B Manish Reddy (AM.EN.U4AIE22014)
+Midhun S (AM.EN.U4AIE22032)
+Sreeram R (AM.EN.U4AIE22047)
+AMRITA VISHWA VIDYAPEETHAM
+May 14, 2025
+
+
+--- PAGE 2 ---
+
+Contents
+Revision History
+4
+1
+Introduction
+4
+1.1
+Purpose . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+4
+1.2
+Document Conventions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+4
+1.3
+Intended Audience and Reading Suggestions . . . . . . . . . . . . . . . . . . . . . . .
+4
+1.4
+Project Scope . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+4
+1.5
+References . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+5
+2
+Overall Description
+5
+2.1
+Product Perspective
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+5
+2.2
+Product Features . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+5
+2.3
+User Classes and Characteristics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+6
+2.4
+Operating Environment
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+6
+2.5
+Design and Implementation Constraints . . . . . . . . . . . . . . . . . . . . . . . . . .
+6
+2.6
+User Documentation
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+7
+2.7
+Assumptions and Dependencies . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+7
+3
+System Features
+7
+3.1
+User Authentication and Authorization . . . . . . . . . . . . . . . . . . . . . . . . . .
+7
+3.1.1
+Description and Priority . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+7
+3.1.2
+Stimulus/Response Sequences . . . . . . . . . . . . . . . . . . . . . . . . . . .
+7
+3.1.3
+Functional Requirements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+7
+3.2
+Employee Management . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+8
+3.2.1
+Description and Priority . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+8
+3.2.2
+Stimulus/Response Sequences . . . . . . . . . . . . . . . . . . . . . . . . . . .
+8
+3.2.3
+Functional Requirements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+8
+3.3
+Attendance Management . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+8
+3.3.1
+Description and Priority . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+8
+3.3.2
+Stimulus/Response Sequences . . . . . . . . . . . . . . . . . . . . . . . . . . .
+8
+3.3.3
+Functional Requirements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+8
+3.4
+Leave Management . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+8
+3.4.1
+Description and Priority . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+8
+3.4.2
+Stimulus/Response Sequences . . . . . . . . . . . . . . . . . . . . . . . . . . .
+9
+3.4.3
+Functional Requirements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+9
+3.5
+Task Management . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+9
+3.5.1
+Description and Priority . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+9
+3.5.2
+Stimulus/Response Sequences . . . . . . . . . . . . . . . . . . . . . . . . . . .
+9
+3.5.3
+Functional Requirements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+9
+3.6
+Performance Evaluation
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+9
+3.6.1
+Description and Priority . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+9
+3.6.2
+Stimulus/Response Sequences . . . . . . . . . . . . . . . . . . . . . . . . . . .
+9
+3.6.3
+Functional Requirements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+10
+3.7
+Payroll Management
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+10
+3.7.1
+Description and Priority . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+10
+3.7.2
+Stimulus/Response Sequences . . . . . . . . . . . . . . . . . . . . . . . . . . .
+10
+3.7.3
+Functional Requirements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+10
+3.8
+AI Chatbot
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+10
+3.8.1
+Description and Priority . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+10
+2
+
+
+--- PAGE 3 ---
+
+AI-EMS SRS
+3 of 16
+3.8.2
+Stimulus/Response Sequences . . . . . . . . . . . . . . . . . . . . . . . . . . .
+10
+3.8.3
+Functional Requirements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+11
+3.9
+Sentiment Analysis . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+11
+3.9.1
+Description and Priority . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+11
+3.9.2
+Stimulus/Response Sequences . . . . . . . . . . . . . . . . . . . . . . . . . . .
+11
+3.9.3
+Functional Requirements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+11
+3.10 Employee Churn Prediction
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+11
+3.10.1 Description and Priority . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+11
+3.10.2 Stimulus/Response Sequences . . . . . . . . . . . . . . . . . . . . . . . . . . .
+11
+3.10.3 Functional Requirements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+12
+3.11 AI Recruitment Module
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+12
+3.11.1 Description and Priority . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+12
+3.11.2 Stimulus/Response Sequences . . . . . . . . . . . . . . . . . . . . . . . . . . .
+12
+3.11.3 Functional Requirements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+12
+4
+External Interface Requirements
+12
+4.1
+User Interfaces
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+12
+4.2
+Hardware Interfaces . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+13
+4.3
+Software Interfaces . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+13
+4.4
+Communications Interfaces . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+13
+5
+Other Non-Functional Requirements
+13
+5.1
+Performance Requirements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+13
+5.2
+Security Requirements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+14
+5.3
+Reliability Requirements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+14
+5.4
+Usability Requirements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+14
+5.5
+Scalability Requirements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+14
+5.6
+Maintainability Requirements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+14
+5.7
+Compatibility Requirements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+15
+6
+Other Requirements
+15
+Appendices
+15
+Appendix A: Glossary
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+15
+Appendix B: Analysis Models . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+15
+Appendix C: Issues List
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+16
+AMRITA VISHWA VIDYAPEETHAM
+
+
+--- PAGE 4 ---
+
+AI-EMS SRS
+4 of 16
+Revision History
+Name
+Date
+Reason for Changes
+Version
+B Manish Reddy
+May 14, 2025
+Initial draft
+1.0
+1
+Introduction
+1.1
+Purpose
+This Software Requirements Specification (SRS) provides a comprehensive description of the AI-
+Enhanced Employee Management System (AI-EMS), an advanced HR management solution that
+integrates artificial intelligence (AI) and machine learning (ML) to optimize workforce management.
+The document details functional and non-functional requirements, system interfaces, and constraints
+for developers, stakeholders, and users, ensuring a clear roadmap for development.
+1.2
+Document Conventions
+• Prioritization: Requirements are prioritized as High, Medium, or Low, with functional re-
+quirements inheriting the priority of their parent feature.
+• Formatting: Bold text denotes section headings, and bulleted lists highlight key points. Re-
+quirements are numbered (e.g., FR-1, NFR-1) for reference.
+• Section Numbering: Hierarchical numbering (e.g., 1.1, 3.2.1) ensures structured navigation.
+• Font: Consistent typeface for readability, aligned with mentor-approved standards.
+1.3
+Intended Audience and Reading Suggestions
+• Developers: Focus on Sections 3 (System Features), 4 (External Interface Requirements), and
+5 (Non-Functional Requirements) for technical specifications.
+• Project Managers: Review Sections 1 (Introduction) and 2 (Overall Description) for project
+scope and objectives.
+• Testers: Refer to Section 3 for functional requirements and Section 5 for performance and
+reliability criteria.
+• Users (HR Managers, Employees): Read Section 2.2 (Product Features) and 2.3 (User
+Classes) for system functionality.
+• Documentation Writers: Use Sections 1.2 (Document Conventions) and 2.6 (User Docu-
+mentation) for guidance.
+• AI Researchers/Students: Focus on Sections 3.8–3.11 for AI/ML features.
+1.4
+Project Scope
+The AI-EMS enhances traditional employee management systems by integrating AI and ML to au-
+tomate HR processes, provide intelligent insights, and improve employee satisfaction. Key objectives
+include:
+• Automating routine HR tasks (e.g., attendance, leave, payroll).
+AMRITA VISHWA VIDYAPEETHAM
+
+
+--- PAGE 5 ---
+
+AI-EMS SRS
+5 of 16
+• Providing AI-driven predictions for performance, churn, and task optimization.
+• Offering a user-friendly interface with an AI chatbot for employee support.
+• Ensuring compliance with data privacy regulations (e.g., GDPR, CCPA).
+• Serving as a learning platform for AI undergraduate students.
+The system benefits HR managers, department managers, employees, and system administrators by
+streamlining operations, reducing costs, and fostering data-driven decision-making.
+1.5
+References
+1. Base Employee Management System – Github Repository
+2. Laravel Documentation - https://laravel.com/docs
+3. MySQL Documentation - https://dev.mysql.com/doc/
+4. Bootstrap Documentation - https://getbootstrap.com/docs/
+5. Scikit-learn Documentation - https://scikit-learn.org/stable/documentation.html
+6. TensorFlow Documentation - https://www.tensorflow.org/guide
+7. PyTorch Documentation - https://pytorch.org/docs/stable/index.html
+8. Sommerville, I. (2015). Software Engineering (10th ed.). Pearson.
+2
+Overall Description
+2.1
+Product Perspective
+The AI-EMS is a standalone web application extending traditional employee management systems
+with AI/ML capabilities. Built using Laravel (backend), MySQL (database), Bootstrap (frontend),
+and Python-based AI/ML libraries (Scikit-learn, TensorFlow, PyTorch), it integrates with existing
+HR workflows while offering advanced features like sentiment analysis and churn prediction. The
+system can connect to third-party services via RESTful APIs, enhancing its versatility.
+2.2
+Product Features
+• Employee Management: CRUD operations for employee records, including personal details,
+skills, and documents.
+• Attendance Tracking: Records check-in/check-out times with AI-based pattern prediction.
+• Leave Management: Manages leave requests, approvals, and balances with AI predictions.
+• Task Management: Assigns and tracks tasks with AI-optimized assignments.
+• Performance Evaluation: Conducts evaluations with AI-driven performance predictions.
+• Payroll Management: Calculates salaries and detects anomalies using AI.
+• AI Chatbot: Provides instant employee support via NLP.
+AMRITA VISHWA VIDYAPEETHAM
+
+
+--- PAGE 6 ---
+
+AI-EMS SRS
+6 of 16
+• Sentiment Analysis: Analyzes employee feedback for sentiment trends.
+• Employee Churn Prediction: Identifies and mitigates churn risks.
+• AI Recruitment: Ranks candidates and streamlines hiring.
+2.3
+User Classes and Characteristics
+• Admin/HR Manager: Full system access; manages employee data and uses AI insights for
+optimization. Requires robust UI and reporting tools.
+• Department Managers: Manages team tasks and performance; needs AI-driven team in-
+sights. Requires task and evaluation interfaces.
+• Employees: Views personal data, applies for leave, and interacts with the chatbot. Needs
+intuitive UI.
+• System Administrators: Maintains system, manages accounts, and ensures security. Re-
+quires admin tools and logs.
+• AI Researchers/Students: Accesses AI models and datasets for learning. Requires API
+documentation and model details.
+2.4
+Operating Environment
+• Web Browsers: Google Chrome, Mozilla Firefox, Safari, Microsoft Edge (latest versions).
+• Server: Apache or Nginx.
+• Database: MySQL 8.0+.
+• Backend: Laravel (PHP 8.1+).
+• Frontend: Bootstrap 5.
+• AI/ML: Python 3.9+ with Scikit-learn, TensorFlow, PyTorch.
+• Operating Systems: Windows, macOS, Linux.
+• Devices: Desktops, laptops, tablets, smartphones (responsive design).
+2.5
+Design and Implementation Constraints
+• Must integrate with existing employee management system structures.
+• AI models must run efficiently on standard server hardware.
+• Must comply with GDPR, CCPA, and other data privacy regulations.
+• Must scale to handle growing employee records and concurrent users.
+• Third-party integrations require secure, documented APIs.
+AMRITA VISHWA VIDYAPEETHAM
+
+
+--- PAGE 7 ---
+
+AI-EMS SRS
+7 of 16
+2.6
+User Documentation
+• User manuals for each user class (Admin, Manager, Employee).
+• Online help system with tooltips and FAQs.
+• Administrator guide for system setup and maintenance.
+• Installation and configuration guide for deployment.
+• API documentation for integration.
+• AI model documentation for training and evaluation.
+2.7
+Assumptions and Dependencies
+• Users have basic computer literacy and access to supported browsers.
+• Historical employee data is available for AI model training.
+• Continuous internet access is available for cloud-based AI services.
+• Server environment supports Laravel and Python integration.
+• Third-party APIs (e.g., email services) remain stable.
+3
+System Features
+3.1
+User Authentication and Authorization
+3.1.1
+Description and Priority
+• Description: Secure login and role-based access control for all users.
+• Priority: High.
+3.1.2
+Stimulus/Response Sequences
+• Stimulus: User enters credentials on login page.
+• Response: System validates credentials and grants access based on role.
+3.1.3
+Functional Requirements
+• FR-1: System shall provide secure login with username and password.
+• FR-2: System shall enforce role-based access control (e.g., Admin, Employee).
+• FR-3: Admins shall create, modify, and delete user accounts.
+• FR-4: System shall enforce password policies (min. 8 characters, mixed case, numbers).
+• FR-5: System shall provide password reset via email.
+AMRITA VISHWA VIDYAPEETHAM
+
+
+--- PAGE 8 ---
+
+AI-EMS SRS
+8 of 16
+3.2
+Employee Management
+3.2.1
+Description and Priority
+• Description: Manages employee records, including personal and job details.
+• Priority: High.
+3.2.2
+Stimulus/Response Sequences
+• Stimulus: Admin adds a new employee via form.
+• Response: System saves employee data and displays confirmation.
+3.2.3
+Functional Requirements
+• FR-6: Admins shall add, view, edit, and delete employee information.
+• FR-7: System shall store employee details (name, contact, job role, documents).
+• FR-8: System shall support employee profile pictures.
+• FR-9: Employees shall update personal information (pending approval).
+• FR-10: System shall provide search and filter for employee records.
+3.3
+Attendance Management
+3.3.1
+Description and Priority
+• Description: Tracks employee attendance with AI predictions.
+• Priority: High.
+3.3.2
+Stimulus/Response Sequences
+• Stimulus: Employee checks in via interface.
+• Response: System records check-in time and updates attendance.
+3.3.3
+Functional Requirements
+• FR-11: System shall track check-in/check-out times.
+• FR-12: System shall generate attendance reports.
+• FR-13: Admins shall edit attendance records manually.
+• FR-14: System shall notify for attendance anomalies.
+• FR-15: System shall predict attendance patterns using AI.
+3.4
+Leave Management
+3.4.1
+Description and Priority
+• Description: Manages leave requests and balances with AI predictions.
+• Priority: High.
+AMRITA VISHWA VIDYAPEETHAM
+
+
+--- PAGE 9 ---
+
+AI-EMS SRS
+9 of 16
+3.4.2
+Stimulus/Response Sequences
+• Stimulus: Employee submits leave request.
+• Response: System notifies manager for approval.
+3.4.3
+Functional Requirements
+• FR-16: Employees shall apply for leave.
+• FR-17: Managers shall approve/reject leave requests.
+• FR-18: System shall track leave balances.
+• FR-19: System shall generate leave reports.
+• FR-20: System shall predict leave patterns using AI.
+3.5
+Task Management
+3.5.1
+Description and Priority
+• Description: Assigns and tracks tasks with AI optimization.
+• Priority: Medium.
+3.5.2
+Stimulus/Response Sequences
+• Stimulus: Manager assigns task to employee.
+• Response: System notifies employee and tracks task progress.
+3.5.3
+Functional Requirements
+• FR-21: Managers shall create and assign tasks.
+• FR-22: Employees shall view and update assigned tasks.
+• FR-23: System shall track task status and completion.
+• FR-24: System shall generate task reports.
+• FR-25: System shall optimize task assignments using AI.
+3.6
+Performance Evaluation
+3.6.1
+Description and Priority
+• Description: Conducts performance evaluations with AI predictions.
+• Priority: Medium.
+3.6.2
+Stimulus/Response Sequences
+• Stimulus: Manager submits evaluation form.
+• Response: System saves evaluation and updates employee record.
+AMRITA VISHWA VIDYAPEETHAM
+
+
+--- PAGE 10 ---
+
+AI-EMS SRS
+10 of 16
+3.6.3
+Functional Requirements
+• FR-26: Managers shall conduct performance evaluations.
+• FR-27: System shall store historical performance data.
+• FR-28: System shall generate performance reports.
+• FR-29: System shall predict employee performance using AI.
+• FR-30: System shall recommend performance improvements.
+3.7
+Payroll Management
+3.7.1
+Description and Priority
+• Description: Manages salaries with AI anomaly detection.
+• Priority: High.
+3.7.2
+Stimulus/Response Sequences
+• Stimulus: Admin generates payroll for a period.
+• Response: System calculates salaries and generates payslips.
+3.7.3
+Functional Requirements
+• FR-31: System shall calculate salaries based on attendance and leave.
+• FR-32: System shall generate payroll reports.
+• FR-33: System shall track salary history.
+• FR-34: System shall detect payroll anomalies using AI.
+• FR-35: System shall provide salary forecasting.
+3.8
+AI Chatbot
+3.8.1
+Description and Priority
+• Description: Provides instant employee support via NLP.
+• Priority: Medium.
+3.8.2
+Stimulus/Response Sequences
+• Stimulus: Employee sends query to chatbot.
+• Response: Chatbot responds or escalates to HR.
+AMRITA VISHWA VIDYAPEETHAM
+
+
+--- PAGE 11 ---
+
+AI-EMS SRS
+11 of 16
+3.8.3
+Functional Requirements
+• FR-36: System shall provide an AI chatbot for queries.
+• FR-37: Chatbot shall respond to common HR queries instantly.
+• FR-38: Chatbot shall escalate complex queries to HR.
+• FR-39: Chatbot shall learn from interactions.
+• FR-40: Chatbot shall use NLP for query understanding.
+3.9
+Sentiment Analysis
+3.9.1
+Description and Priority
+• Description: Analyzes employee feedback for sentiment trends.
+• Priority: Medium.
+3.9.2
+Stimulus/Response Sequences
+• Stimulus: Employee submits feedback.
+• Response: System analyzes sentiment and generates report.
+3.9.3
+Functional Requirements
+• FR-41: System shall analyze feedback for sentiment.
+• FR-42: System shall generate sentiment reports.
+• FR-43: System shall alert managers to negative sentiment.
+• FR-44: System shall recommend satisfaction improvements.
+• FR-45: System shall track sentiment trends.
+3.10
+Employee Churn Prediction
+3.10.1
+Description and Priority
+• Description: Predicts employee churn risks.
+• Priority: Medium.
+3.10.2
+Stimulus/Response Sequences
+• Stimulus: System analyzes employee data.
+• Response: System identifies high-risk employees and factors.
+AMRITA VISHWA VIDYAPEETHAM
+
+
+--- PAGE 12 ---
+
+AI-EMS SRS
+12 of 16
+3.10.3
+Functional Requirements
+• FR-46: System shall predict employee churn likelihood.
+• FR-47: System shall identify churn factors.
+• FR-48: System shall recommend retention strategies.
+• FR-49: System shall generate churn prediction reports.
+• FR-50: System shall alert managers to high-risk employees.
+3.11
+AI Recruitment Module
+3.11.1
+Description and Priority
+• Description: Streamlines hiring with AI candidate ranking.
+• Priority: Medium.
+3.11.2
+Stimulus/Response Sequences
+• Stimulus: HR posts job opening.
+• Response: System ranks candidates based on job fit.
+3.11.3
+Functional Requirements
+• FR-51: HR shall post job openings.
+• FR-52: System shall track candidate applications.
+• FR-53: System shall rank candidates using AI.
+• FR-54: System shall manage interview scheduling.
+• FR-55: System shall generate recruitment reports.
+4
+External Interface Requirements
+4.1
+User Interfaces
+• Login Interface: Secure form with username/password fields.
+• Dashboard: Role-based dashboard with metrics and quick links.
+• Employee Management: Forms for CRUD operations, search/filter options.
+• Attendance Management: Calendar view for check-in/check-out.
+• Leave Management: Forms for leave applications and approvals.
+• Task Management: Task board with drag-and-drop functionality.
+• Performance Evaluation: Evaluation forms and history view.
+• Payroll Management: Salary details and payslip generation.
+AMRITA VISHWA VIDYAPEETHAM
+
+
+--- PAGE 13 ---
+
+AI-EMS SRS
+13 of 16
+• AI Insights: Visualizations for predictions and trends.
+• AI Chatbot: Chat window with quick response buttons.
+• Recruitment: Job posting and candidate management forms.
+4.2
+Hardware Interfaces
+• Server Hardware: Standard server with Apache/Nginx.
+• Client Hardware: Desktops, laptops, tablets, smartphones with browsers.
+• Biometric Devices (Optional): Fingerprint scanners for attendance.
+4.3
+Software Interfaces
+• Database: MySQL 8.0+ for data storage/retrieval.
+• Web Server: Apache/Nginx for hosting.
+• AI/ML: Python with Scikit-learn, TensorFlow, PyTorch for model training/inference.
+• API: RESTful API for third-party integration.
+• Notification: SMTP for emails, WebSockets for real-time updates.
+4.4
+Communications Interfaces
+• HTTP/HTTPS: Secure web communication.
+• SMTP: Email notifications for approvals and alerts.
+• WebSockets: Real-time chatbot and notifications.
+5
+Other Non-Functional Requirements
+5.1
+Performance Requirements
+• NFR-1: System shall support 1000 concurrent users.
+• NFR-2: User requests shall respond within 2 seconds.
+• NFR-3: System shall handle 10,000 employee records.
+• NFR-4: AI model inference shall complete within 5 seconds.
+• NFR-5: System shall process 100 transactions/second.
+AMRITA VISHWA VIDYAPEETHAM
+
+
+--- PAGE 14 ---
+
+AI-EMS SRS
+14 of 16
+5.2
+Security Requirements
+• NFR-6: All sensitive data shall be encrypted (TLS/SSL).
+• NFR-7: Multi-factor authentication for admin access.
+• NFR-8: System shall maintain audit trails for critical actions.
+• NFR-9: System shall comply with GDPR and CCPA.
+• NFR-10: Role-based access control for all users.
+5.3
+Reliability Requirements
+• NFR-11: System uptime shall be 99.9%.
+• NFR-12: Daily automatic data backups.
+• NFR-13: Fault tolerance mechanisms for high availability.
+• NFR-14: Error handling and recovery for all operations.
+• NFR-15: Data integrity during concurrent operations.
+5.4
+Usability Requirements
+• NFR-16: Responsive design for all screen sizes.
+• NFR-17: Consistent navigation and UI across modules.
+• NFR-18: Clear, helpful error messages.
+• NFR-19: Support for keyboard navigation.
+• NFR-20: Tooltips and help documentation for users.
+5.5
+Scalability Requirements
+• NFR-21: Scalable for growing user base.
+• NFR-22: Scalable for increasing data volume.
+• NFR-23: Support horizontal scaling.
+• NFR-24: Caching for performance optimization.
+• NFR-25: Optimized database queries for large datasets.
+5.6
+Maintainability Requirements
+• NFR-26: Modular design for easy updates.
+• NFR-27: Well-documented code with comments.
+• NFR-28: Logging for debugging and monitoring.
+• NFR-29: Designed for ease of maintenance.
+• NFR-30: Adherence to coding standards (PSR, PEP 8).
+AMRITA VISHWA VIDYAPEETHAM
+
+
+--- PAGE 15 ---
+
+AI-EMS SRS
+15 of 16
+5.7
+Compatibility Requirements
+• NFR-31: Compatible with Chrome, Firefox, Safari, Edge.
+• NFR-32: Compatible with mobile devices.
+• NFR-33: Compatible with Windows, macOS, Linux.
+• NFR-34: API compatibility for integration.
+• NFR-35: Support for data import/export (CSV, JSON).
+6
+Other Requirements
+• None at this time.
+Appendices
+Appendix A: Glossary
+• AI-EMS: AI-Enhanced Employee Management System.
+• HR: Human Resources.
+• ML: Machine Learning.
+• UI: User Interface.
+• API: Application Programming Interface.
+• DBMS: Database Management System.
+• CRUD: Create, Read, Update, Delete.
+• NLP: Natural Language Processing.
+• SRS: Software Requirements Specification.
+Appendix B: Analysis Models
+• Use Case Diagram: Illustrates interactions between actors (Admin, Manager, Employee)
+and system functions (e.g., manage employee, predict churn).
+• Activity Diagram: Depicts workflow for AI-powered performance prediction, from data col-
+lection to result presentation.
+• Data Flow Diagram (DFD): Shows data flow for key processes like sentiment analysis and
+task assignment.
+AMRITA VISHWA VIDYAPEETHAM
+
+
+--- PAGE 16 ---
+
+AI-EMS SRS
+16 of 16
+Appendix C: Issues List
+• Open Issues:
+– Intermittent time-zone discrepancies in attendance logs leading to incorrect check-in/out
+times.
+– Occasional AI prediction drift due to outdated model weights between scheduled retrain-
+ing.
+– Email/SMS notification delays under high load, causing late alerts to employees.
+– UI alignment glitch on mobile screens for the Task Management dashboard.
+• Resolved Issues:
+– Fixed OAuth token refresh bug that caused user sessions to expire unexpectedly (Issue
+#42).
+– Patched SQL injection vulnerability in the leave-application endpoint (Issue #37).
+– Optimized database indexing on the performance metrics tables, reducing report genera-
+tion time by 60%.
+– Eliminated memory leak in the AI model serving container through improved resource
+cleanup (Issue #45).
+• Future Enhancements:
+– Multilingual support for global accessibility.
+– Integration with wearable devices for automated attendance tracking.
+– Advanced AI module for real-time employee wellness monitoring and sentiment analysis.
+– Role-based dashboard customization allowing managers to design bespoke widgets.
+– Offline mode with local caching for field-based employees in low-connectivity areas.
+AMRITA VISHWA VIDYAPEETHAM

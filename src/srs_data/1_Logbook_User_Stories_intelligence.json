@@ -1,0 +1,434 @@
+{
+  "document_name": "1_Logbook_User_Stories",
+  "actors": [
+    "Admin",
+    "Class Representative",
+    "Faculty"
+  ],
+  "user_stories": [
+    {
+      "id": "US001",
+      "role": "Class Representative",
+      "goal": "access my class list for the current period and mark each student as present or absent",
+      "reason": "I can quickly submit the initial attendance to the faculty for review",
+      "confidence": 0.95,
+      "acceptance_criteria": [
+        {
+          "text": "The class list is pre-populated with all registered students for that class.",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        },
+        {
+          "text": "CR can access the attendance list for the currently scheduled period.",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        },
+        {
+          "text": "By default, all students are marked \"Present\".",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        },
+        {
+          "text": "CR can tap a student's name to toggle their status to \"Absent\".",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        },
+        {
+          "text": "A \"Submit to Faculty\" button becomes active after the CR has viewed the list.",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "raw_text": "### **US001 – Attendance Management**\n\n**As a** Class Representative,\n\n**I want to** access my class list for the current period and mark each student as present or absent,\n\n**so that** I can quickly submit the initial attendance to the faculty for review.\n\n#### **Acceptance Criteria:**\n\n- The class list is pre-populated with all registered students for that class.\n- CR can access the attendance list for the currently scheduled period.\n- By default, all students are marked \"Present\".\n- CR can tap a student's name to toggle their status to \"Absent\".\n- A \"Submit to Faculty\" button becomes active after the CR has viewed the list."
+    },
+    {
+      "id": "US002",
+      "role": "Class Representative",
+      "goal": "view the complete daily and weekly timetable for my class",
+      "reason": "I can anticipate which faculty is coming and prepare for the subjects",
+      "confidence": 0.95,
+      "acceptance_criteria": [
+        {
+          "text": "The timetable view displays all periods of the week in a structured table format.",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        },
+        {
+          "text": "The view displays period times, subject names, and faculty names.",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        },
+        {
+          "text": "The active period during that day is highlighted for easy reference.",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "raw_text": "## **US002 – Schedule & Timetable Viewing**\n\n**As a** Class Representative,\n\n**I want to** view the complete daily and weekly timetable for my class,\n\n**so that** I can anticipate which faculty is coming and prepare for the subjects.\n\n#### **Acceptance Criteria:**\n\n- The timetable view displays all periods of the week in a structured table format.\n- The view displays period times, subject names, and faculty names.\n- The active period during that day is highlighted for easy reference.\n\n<!-- PAGE_1 -->"
+    },
+    {
+      "id": "US003",
+      "role": "Class Representative",
+      "goal": "report when a scheduled class is free (faculty absent) or substituted",
+      "reason": "the administration and faculty-in-charge are immediately aware of schedule changes",
+      "confidence": 0.95,
+      "acceptance_criteria": [
+        {
+          "text": "On the current period's attendance screen, a \"Report Class Status\" option is available.",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        },
+        {
+          "text": "Available options:",
+          "type": "group",
+          "level": 0,
+          "children": [
+            {
+              "text": "\"Faculty Absent (Free Period)\"  THEN  If \"Faculty Absent (Free Period)\" is selected, the period is marked as absent.",
+              "type": "requirement",
+              "level": 2,
+              "children": [],
+              "logic": [
+                {
+                  "type": "conditional",
+                  "trigger": {
+                    "event": "status_change",
+                    "value": "\"Faculty Absent (Free Period)\" is selected"
+                  },
+                  "condition": "\"Faculty Absent (Free Period)\" is selected",
+                  "action": {
+                    "type": "outcome",
+                    "description": "the period is marked as absent"
+                  },
+                  "result": null,
+                  "confidence": 0.85
+                }
+              ]
+            },
+            {
+              "text": "\"Substitution\"  THEN If \"Substitution\" is selected, the CR can select the substitute faculty's name from a searchable list.",
+              "type": "requirement",
+              "level": 2,
+              "children": [],
+              "logic": [
+                {
+                  "type": "conditional",
+                  "trigger": {
+                    "event": "status_change",
+                    "value": "\"Substitution\" is selected"
+                  },
+                  "condition": "\"Substitution\" is selected",
+                  "action": {
+                    "type": "outcome",
+                    "description": "the CR can select the substitute faculty's name from a searchable list"
+                  },
+                  "result": null,
+                  "confidence": 0.85
+                }
+              ]
+            }
+          ],
+          "logic": []
+        }
+      ],
+      "raw_text": "## **US003 – Class Status Reporting**\n\n**As a** Class Representative,\n\n**I want to** report when a scheduled class is free (faculty absent) or substituted, **so that** the administration and faculty-in-charge are immediately aware of schedule changes.\n\n## **Acceptance Criteria:**\n\n- On the current period's attendance screen, a \"Report Class Status\" option is available.\n- Available options:\n  - \"Faculty Absent (Free Period)\" ** THEN ** If \"Faculty Absent (Free Period)\" is selected, the period is marked as absent.\n  - \"Substitution\" ** THEN **If \"Substitution\" is selected, the CR can select the substitute faculty's name from a searchable list.\n\n<!-- PAGE_2 -->\n# **Faculty User Stories**"
+    },
+    {
+      "id": "US004",
+      "role": "Faculty",
+      "goal": "see a dashboard overview of my day",
+      "reason": "I can instantly view all assigned periods, classes, and attendance status",
+      "confidence": 0.95,
+      "acceptance_criteria": [
+        {
+          "text": "Each period appears as a card displaying the Classroom number, Course name, and Timing.",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        },
+        {
+          "text": "If attendance is submitted by the CR, the card shows \"Pending Review\" with counts (e.g., \"Present: 45 / Absent: 5\").",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": [
+            {
+              "type": "conditional",
+              "trigger": {
+                "event": "status_change",
+                "value": "attendance is submitted by the CR"
+              },
+              "condition": "attendance is submitted by the CR",
+              "action": {
+                "type": "outcome",
+                "description": "the card shows \"Pending Review\" with counts (e"
+              },
+              "result": null,
+              "confidence": 0.85
+            }
+          ]
+        },
+        {
+          "text": "If attendance is not submitted, the card shows \"Awaiting CR Submission\".",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": [
+            {
+              "type": "conditional",
+              "trigger": {
+                "event": "status_change",
+                "value": "attendance is not submitted"
+              },
+              "condition": "attendance is not submitted",
+              "action": {
+                "type": "outcome",
+                "description": "the card shows \"Awaiting CR Submission\""
+              },
+              "result": null,
+              "confidence": 0.85
+            }
+          ]
+        }
+      ],
+      "raw_text": "### **US004 – Dashboard Overview**\n\n**As a** Faculty member,\n\n**I want to** see a dashboard overview of my day,\n\n**so that** I can instantly view all assigned periods, classes, and attendance status.\n\n#### **Acceptance Criteria:**\n\n- Each period appears as a card displaying the Classroom number, Course name, and Timing.\n- If attendance is submitted by the CR, the card shows \"Pending Review\" with counts (e.g., \"Present: 45 / Absent: 5\").\n- If attendance is not submitted, the card shows \"Awaiting CR Submission\"."
+    },
+    {
+      "id": "US005",
+      "role": "Faculty",
+      "goal": "review and edit the attendance list submitted by the CR",
+      "reason": "I can ensure the final record is accurate",
+      "confidence": 0.95,
+      "acceptance_criteria": [
+        {
+          "text": "Faculty can override any student's status (e.g., change \"Absent\" to \"Present\").",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        },
+        {
+          "text": "A \"Confirm & Finalize\" button submits the finalized attendance.",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        },
+        {
+          "text": "Once finalized, the record is locked and marked as \"Completed\".",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "raw_text": "## **US005 – Attendance Review & Confirmation**\n\n**As a** Faculty member,\n\n**I want to** review and edit the attendance list submitted by the CR, **so that** I can ensure the final record is accurate.\n\n#### **Acceptance Criteria:**\n\n- Faculty can override any student's status (e.g., change \"Absent\" to \"Present\").\n- A \"Confirm & Finalize\" button submits the finalized attendance.\n- Once finalized, the record is locked and marked as \"Completed\".\n\n<!-- PAGE_3 -->"
+    },
+    {
+      "id": "US006",
+      "role": "Faculty",
+      "goal": "see visual indicators for each period's status",
+      "reason": "I can quickly understand my teaching progress and engagement",
+      "confidence": 0.95,
+      "acceptance_criteria": [
+        {
+          "text": "Green: Attendance finalized (completed period).",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        },
+        {
+          "text": "Red: Faculty absent or class not engaged.",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        },
+        {
+          "text": "Orange: Substitution period taken.",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        },
+        {
+          "text": "Grey: Upcoming or unengaged period.",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "raw_text": "## **US006 – Period Status Visualization**\n\n**As a** Faculty member,\n\n**I want to** see visual indicators for each period's status,\n\n**so that** I can quickly understand my teaching progress and engagement.\n\n## **Acceptance Criteria:**\n\n- **Green**: Attendance finalized (completed period).\n- **Red**: Faculty absent or class not engaged.\n- **Orange**: Substitution period taken.\n- **Grey**: Upcoming or unengaged period."
+    },
+    {
+      "id": "US007",
+      "role": "Faculty",
+      "goal": "request a class swap by selecting one of my periods and proposing a new time/day",
+      "reason": "I can handle schedule conflicts or plan extra classes",
+      "confidence": 0.95,
+      "acceptance_criteria": [
+        {
+          "text": "Faculty can browse and select a target slot (free slot or another faculty's slot).",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        },
+        {
+          "text": "Once approved by the targeted slot's faculty, the requesting faculty can occupy the selected period as scheduled.",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        },
+        {
+          "text": "Faculty can select one of their future periods to compensate for the swapped from the timetable.",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "raw_text": "## **US007 – Class Swap Requests**\n\n**As a** Faculty member,\n\n**I want to** request a class swap by selecting one of my periods and proposing a new time/day,\n\n**so that** I can handle schedule conflicts or plan extra classes.\n\n## **Acceptance Criteria:**\n\n- Faculty can browse and select a target slot (free slot or another faculty's slot).\n- Once approved by the targeted slot's faculty, the requesting faculty can occupy the selected period as scheduled.\n- Faculty can select one of their future periods to compensate for the swapped from the timetable.\n\n<!-- PAGE_4 -->"
+    },
+    {
+      "id": "US008",
+      "role": "Faculty",
+      "goal": "view attendance statistics for my subjects",
+      "reason": "I can monitor engagement and identify students with low attendance",
+      "confidence": 0.95,
+      "acceptance_criteria": [
+        {
+          "text": "Displays overall attendance percentage.",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        },
+        {
+          "text": "Faculty can set a date range (Last 30 Days, This Semester, or Custom).",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        },
+        {
+          "text": "When a student's attendance falls below 75%, a notification is generated for the faculty, including the number of classes the student has been absent.",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        },
+        {
+          "text": "Individual student attendance can be viewed by clicking their name, showing date-wise records and summary counts.",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        },
+        {
+          "text": "For each individual student, shows a detailed, date-wise attendance record along with a summary count (e.g., \"Attended 8 out of 12 classes\").",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "raw_text": "### **US008 – Attendance Analytics**\n\n**As a** Faculty member,\n\n**I want to** view attendance statistics for my subjects,\n\n**so that** I can monitor engagement and identify students with low attendance.\n\n### **Acceptance Criteria:**\n\n- Displays overall attendance percentage.\n- Faculty can set a date range (Last 30 Days, This Semester, or Custom).\n- When a student's attendance falls below 75%, a notification is generated for the faculty, including the number of classes the student has been absent.\n- Individual student attendance can be viewed by clicking their name, showing date-wise records and summary counts.\n- For each individual student, shows a detailed, date-wise attendance record along with a summary count (e.g., \"Attended 8 out of 12 classes\").\n\n# **Admin User Stories**"
+    },
+    {
+      "id": "US011",
+      "role": "Admin",
+      "goal": "view logs of absent periods",
+      "reason": "I can monitor faculty workload and overall curriculum coverage across the department",
+      "confidence": 0.95,
+      "acceptance_criteria": [
+        {
+          "text": "A \"Workload Report\" section is available.",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        },
+        {
+          "text": "The report can be filtered by date range, department, and faculty.",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        },
+        {
+          "text": "Lists event types: Substitution, Swap, Extra Class, and Period Not Engaged.",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        },
+        {
+          "text": "The report can be exported as a PDF or CSV file.",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "raw_text": "## **US011 –Workload & Activity Log**\n\n**As the** Admin,\n\n**I want to** view logs of absent periods, substitutions, swaps, and extra classes **so that** I can monitor faculty workload and overall curriculum coverage across the department.\n\n### **Acceptance Criteria:**\n\n- A \"Workload Report\" section is available.\n- The report can be filtered by date range, department, and faculty.\n- Lists event types: Substitution, Swap, Extra Class, and Period Not Engaged.\n- The report can be exported as a PDF or CSV file.\n\n<!-- PAGE_5 -->"
+    },
+    {
+      "id": "US012",
+      "role": "Admin",
+      "goal": "view real-time engagement metrics for all classes",
+      "reason": "I can monitor academic activity across the department",
+      "confidence": 0.95,
+      "acceptance_criteria": [
+        {
+          "text": "The dashboard displays real-time engagement percentage (e.g., \"85% engaged\").",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        },
+        {
+          "text": "Includes a bar chart showing \"Total Engaged\" vs. \"Total Not Engaged\" periods.",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        },
+        {
+          "text": "Admin can drill down into \"Not Engaged\" periods to view affected classes.",
+          "type": "requirement",
+          "level": 0,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "raw_text": "## **US012 – Department Engagement Monitoring**\n\n**As the** Admin,\n\n**I want to** view real-time engagement metrics for all classes, **so that** I can monitor academic activity across the department.\n\n## **Acceptance Criteria:**\n\n- The dashboard displays real-time engagement percentage (e.g., \"85% engaged\").\n- Includes a bar chart showing \"Total Engaged\" vs. \"Total Not Engaged\" periods.\n- Admin can drill down into \"Not Engaged\" periods to view affected classes."
+    }
+  ],
+  "metadata": {
+    "total_stories": 10,
+    "source_file": "F:\\AMRITA ALL SEMESTER\\projects\\SRS Clarity\\backend\\data\\raw_SRS_processed\\stage3_cleaned_md\\1_Logbook_User_Stories_clean.md"
+  }
+}

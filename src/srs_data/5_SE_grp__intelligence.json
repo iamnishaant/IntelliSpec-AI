@@ -1,0 +1,125 @@
+{
+  "document_name": "5_SE_grp_",
+  "actors": [
+    "Admin",
+    "System",
+    "User"
+  ],
+  "user_stories": [
+    {
+      "id": "INF-001",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "- Bold for key modules and interfaces.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Bold for key modules and interfaces.\n- Italics for system behavior descriptions.\n- Capitalized headings for section divisions."
+    },
+    {
+      "id": "INF-002",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "The AI-based Blood Bank System is a web-based application that allows individuals to register as Donors, Recipients, or Hospitals. It uses AI to match recipients with the most suitable donors in real-time. The system includes account management, loca",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "The AI-based Blood Bank System is a web-based application that allows individuals to register as Donors, Recipients, or Hospitals. It uses AI to match recipients with the most suitable donors in real-time. The system includes account management, location sharing, emergency SOS messaging, and a robust admin panel. Its core goal is to optimize blood availability and accessibility in urgent and non-urgent situations."
+    },
+    {
+      "id": "INF-003",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "This is a standalone system that integrates with geolocation services and communication APIs for real-time messaging. It can be deployed independently or integrated with hospital management systems.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "This is a standalone system that integrates with geolocation services and communication APIs for real-time messaging. It can be deployed independently or integrated with hospital management systems."
+    },
+    {
+      "id": "INF-004",
+      "type": "contextual_information",
+      "role": "User",
+      "goal": "- User Registration for Donors, Recipients, and Hospitals",
+      "reason": null,
+      "confidence": 0.7999999999999999,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- User Registration for Donors, Recipients, and Hospitals\n- AI-based Donor Matching\n- Location Sharing\n- SOS Emergency Broadcast\n- Role-Based Dashboards (Admin, Donor, Recipient, Hospital)\n- Search & Filter Donors by Location, Blood Group, Availability\n- Notification System"
+    },
+    {
+      "id": "INF-005",
+      "type": "contextual_information",
+      "role": "Admin",
+      "goal": "- Donor: Can update availability, view requests, and respond to SOS.",
+      "reason": null,
+      "confidence": 0.7999999999999999,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Donor: Can update availability, view requests, and respond to SOS.\n- Recipient: Can request blood, view nearby donors, and send SOS.\n- Hospital: Can manage bulk requests and verify blood stocks.\n- Admin: Manages system integrity and user access."
+    },
+    {
+      "id": "INF-006",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "Must use secure HTTPS protocols\n- Support for modern browsers\n- Data storage in Firebase Firestore",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Must use secure HTTPS protocols\n- Support for modern browsers\n- Data storage in Firebase Firestore"
+    },
+    {
+      "id": "INF-007",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "- Users have smartphones or internet-enabled devices",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Users have smartphones or internet-enabled devices\n- Google Maps API is functional\n- Stable internet connection"
+    },
+    {
+      "id": "INF-008",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "SOS messages must reach within 5 seconds",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- 1000 concurrent users\n- SOS messages must reach within 5 seconds"
+    },
+    {
+      "id": "INF-009",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "• Blood Bank System: A platform designed to connect blood donors with recipients and hospitals using AI.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "• Blood Bank System: A platform designed to connect blood donors with recipients and hospitals using AI."
+    },
+    {
+      "id": "INF-010",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "- Mobile app development",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Mobile app development\n- Machine learning for predicting blood demand trends\n- Donor reward and recognition system"
+    }
+  ],
+  "metadata": {
+    "total_stories": 10,
+    "source_file": "F:\\AMRITA ALL SEMESTER\\projects\\SRS Clarity\\backend\\data\\raw_SRS_processed\\stage3_cleaned_md\\5_SE_grp__clean.md",
+    "extraction_method": "v2_format_agnostic"
+  }
+}

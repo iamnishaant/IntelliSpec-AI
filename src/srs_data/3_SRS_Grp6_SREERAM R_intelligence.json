@@ -1,0 +1,1658 @@
+{
+  "document_name": "3_SRS_Grp6_SREERAM R",
+  "actors": [
+    "Admin",
+    "Employee",
+    "Manager",
+    "System",
+    "User"
+  ],
+  "user_stories": [
+    {
+      "id": "INF-001",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "| Name           | Date         | Reason for Changes | Version |",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "| Name           | Date         | Reason for Changes | Version |\n| B Manish Reddy | May 14, 2025 | Initial draft      | 1.0     |"
+    },
+    {
+      "id": "INF-002",
+      "type": "contextual_information",
+      "role": "Employee",
+      "goal": "This Software Requirements Specification (SRS) provides a comprehensive description of the AI-Enhanced Employee Management System (AI-EMS), an advanced HR management solution that integrates artificial intelligence (AI) and machine learning (ML) to o",
+      "reason": null,
+      "confidence": 0.7999999999999999,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "This Software Requirements Specification (SRS) provides a comprehensive description of the AI-Enhanced Employee Management System (AI-EMS), an advanced HR management solution that integrates artificial intelligence (AI) and machine learning (ML) to optimize workforce management. The document details functional and non-functional requirements, system interfaces, and constraints for developers, stakeholders, and users, ensuring a clear roadmap for development."
+    },
+    {
+      "id": "FR-1",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "- Prioritization: Requirements are prioritized as High, Medium, or Low, with functional requirements inheriting the priority of their parent feature.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [
+        {
+          "text": "- Prioritization: Requirements are prioritized as High, Medium, or Low, with functional requirements inheriting the priority of their parent feature.\n- Formatting: Bold text denotes section headings, and bulleted lists highlight key points. Requirements are numbered (e.g., FR-1, NFR-1) for reference.\n- Section Numbering: Hierarchical numbering (e.g., 1.1, 3.2.1) ensures structured navigation.\n- Font: Consistent typeface for readability, aligned with mentor-approved standards.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- Prioritization: Requirements are prioritized as High, Medium, or Low, with functional requirements inheriting the priority of their parent feature.\n- Formatting: Bold text denotes section headings, and bulleted lists highlight key points. Requirements are numbered (e.g., FR-1, NFR-1) for reference.\n- Section Numbering: Hierarchical numbering (e.g., 1.1, 3.2.1) ensures structured navigation.\n- Font: Consistent typeface for readability, aligned with mentor-approved standards."
+    },
+    {
+      "id": "INF-004",
+      "type": "contextual_information",
+      "role": "Employee",
+      "goal": "The AI-EMS enhances traditional employee management systems by integrating AI and ML to automate HR processes, provide intelligent insights, and improve employee satisfaction. Key objectives include:",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "The AI-EMS enhances traditional employee management systems by integrating AI and ML to automate HR processes, provide intelligent insights, and improve employee satisfaction. Key objectives include:"
+    },
+    {
+      "id": "INF-005",
+      "type": "contextual_information",
+      "role": "User",
+      "goal": "- Providing AI-driven predictions for performance, churn, and task optimization.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Providing AI-driven predictions for performance, churn, and task optimization.\n- Offering a user-friendly interface with an AI chatbot for employee support.\n- Ensuring compliance with data privacy regulations (e.g., GDPR, CCPA).\n- Serving as a learning platform for AI undergraduate students."
+    },
+    {
+      "id": "INF-006",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "The system benefits HR managers, department managers, employees, and system administrators by streamlining operations, reducing costs, and fostering data-driven decision-making.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "The system benefits HR managers, department managers, employees, and system administrators by streamlining operations, reducing costs, and fostering data-driven decision-making."
+    },
+    {
+      "id": "INF-007",
+      "type": "contextual_information",
+      "role": "Employee",
+      "goal": "- 1. Base Employee Management System [Github Repository](https://github.com/kiranshahi/Employee-Management-System)",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- 1. Base Employee Management System [Github Repository](https://github.com/kiranshahi/Employee-Management-System)\n- 2. Laravel Documentation \n- 3. MySQL Documentation \n- 4. Bootstrap Documentation \n- 5. Scikit-learn Documentation \n- 6. TensorFlow Documentation \n- 7. PyTorch Documentation \n- 8. Sommerville, I. (2015). Software Engineering (10th ed.). Pearson."
+    },
+    {
+      "id": "INF-008",
+      "type": "contextual_information",
+      "role": "Employee",
+      "goal": "The AI-EMS is a standalone web application extending traditional employee management systems with AI/ML capabilities. Built using Laravel (backend), MySQL (database), Bootstrap (frontend), and Python-based AI/ML libraries (Scikit-learn, TensorFlow, P",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "The AI-EMS is a standalone web application extending traditional employee management systems with AI/ML capabilities. Built using Laravel (backend), MySQL (database), Bootstrap (frontend), and Python-based AI/ML libraries (Scikit-learn, TensorFlow, PyTorch), it integrates with existing HR workflows while offering advanced features like sentiment analysis and churn prediction. The system can connect to third-party services via RESTful APIs, enhancing its versatility."
+    },
+    {
+      "id": "INF-009",
+      "type": "contextual_information",
+      "role": "Employee",
+      "goal": "- Employee Management: CRUD operations for employee records, including personal details, skills, and documents.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Employee Management: CRUD operations for employee records, including personal details, skills, and documents.\n- Attendance Tracking: Records check-in/check-out times with AI-based pattern prediction.\n- Leave Management: Manages leave requests, approvals, and balances with AI predictions.\n- Task Management: Assigns and tracks tasks with AI-optimized assignments.\n- Performance Evaluation: Conducts evaluations with AI-driven performance predictions.\n- Payroll Management: Calculates salaries and detects anomalies using AI.\n- AI Chatbot: Provides instant employee support via NLP."
+    },
+    {
+      "id": "INF-010",
+      "type": "contextual_information",
+      "role": "Employee",
+      "goal": "- Sentiment Analysis: Analyzes employee feedback for sentiment trends.",
+      "reason": null,
+      "confidence": 0.7999999999999999,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Sentiment Analysis: Analyzes employee feedback for sentiment trends.\n- Employee Churn Prediction: Identifies and mitigates churn risks.\n- AI Recruitment: Ranks candidates and streamlines hiring."
+    },
+    {
+      "id": "INF-011",
+      "type": "contextual_information",
+      "role": "Admin",
+      "goal": "- Admin/HR Manager: Full system access; manages employee data and uses AI insights for optimization. Requires robust UI and reporting tools.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Admin/HR Manager: Full system access; manages employee data and uses AI insights for optimization. Requires robust UI and reporting tools.\n- Department Managers: Manages team tasks and performance; needs AI-driven team insights. Requires task and evaluation interfaces.\n- Employees: Views personal data, applies for leave, and interacts with the chatbot. Needs intuitive UI.\n- System Administrators: Maintains system, manages accounts, and ensures security. Requires admin tools and logs.\n- AI Researchers/Students: Accesses AI models and datasets for learning. Requires API documentation and model details."
+    },
+    {
+      "id": "INF-012",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "- Web Browsers: Google Chrome, Mozilla Firefox, Safari, Microsoft Edge (latest versions).",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Web Browsers: Google Chrome, Mozilla Firefox, Safari, Microsoft Edge (latest versions).\n- Server: Apache or Nginx.\n- Database: MySQL 8.0+.\n- Backend: Laravel (PHP 8.1+).\n- Frontend: Bootstrap 5.\n- AI/ML: Python 3.9+ with Scikit-learn, TensorFlow, PyTorch.\n- Operating Systems: Windows, macOS, Linux.\n- Devices: Desktops, laptops, tablets, smartphones (responsive design)."
+    },
+    {
+      "id": "INF-013",
+      "type": "contextual_information",
+      "role": "Employee",
+      "goal": "Must integrate with existing employee management system structures",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Must integrate with existing employee management system structures.\n- AI models must run efficiently on standard server hardware.\n- Must comply with GDPR, CCPA, and other data privacy regulations.\n- Must scale to handle growing employee records and concurrent users.\n- Third-party integrations require secure, documented APIs."
+    },
+    {
+      "id": "INF-014",
+      "type": "contextual_information",
+      "role": "User",
+      "goal": "- User manuals for each user class (Admin, Manager, Employee).",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- User manuals for each user class (Admin, Manager, Employee).\n- Online help system with tooltips and FAQs.\n- Administrator guide for system setup and maintenance.\n- Installation and configuration guide for deployment.\n- API documentation for integration.\n- AI model documentation for training and evaluation."
+    },
+    {
+      "id": "INF-015",
+      "type": "contextual_information",
+      "role": "Employee",
+      "goal": "- Users have basic computer literacy and access to supported browsers.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Users have basic computer literacy and access to supported browsers.\n- Historical employee data is available for AI model training.\n- Continuous internet access is available for cloud-based AI services.\n- Server environment supports Laravel and Python integration.\n- Third-party APIs (e.g., email services) remain stable."
+    },
+    {
+      "id": "INF-016",
+      "type": "contextual_information",
+      "role": "User",
+      "goal": "- Stimulus: User enters credentials on login page.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Stimulus: User enters credentials on login page.\n- Response: System validates credentials and grants access based on role."
+    },
+    {
+      "id": "FR-1",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall provide secure login with username and password",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-1: System shall provide secure login with username and password.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-1: System shall provide secure login with username and password."
+    },
+    {
+      "id": "FR-2",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall enforce role-based access control (e",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-2: System shall enforce role-based access control (e.g., Admin, Employee).",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-2: System shall enforce role-based access control (e.g., Admin, Employee)."
+    },
+    {
+      "id": "FR-3",
+      "type": "functional_requirement",
+      "role": "User",
+      "goal": "Admins shall create, modify, and delete user accounts",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-3: Admins shall create, modify, and delete user accounts.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-3: Admins shall create, modify, and delete user accounts."
+    },
+    {
+      "id": "FR-4",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall enforce password policies (min",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-4: System shall enforce password policies (min. 8 characters, mixed case, numbers).",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-4: System shall enforce password policies (min. 8 characters, mixed case, numbers)."
+    },
+    {
+      "id": "FR-5",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall provide password reset via email",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-5: System shall provide password reset via email.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-5: System shall provide password reset via email."
+    },
+    {
+      "id": "INF-022",
+      "type": "contextual_information",
+      "role": "Admin",
+      "goal": "- Stimulus: Admin adds a new employee via form.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Stimulus: Admin adds a new employee via form.\n- Response: System saves employee data and displays confirmation."
+    },
+    {
+      "id": "FR-6",
+      "type": "functional_requirement",
+      "role": "Employee",
+      "goal": "Admins shall add, view, edit, and delete employee information",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-6: Admins shall add, view, edit, and delete employee information.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-6: Admins shall add, view, edit, and delete employee information."
+    },
+    {
+      "id": "FR-7",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall store employee details (name, contact, job role, documents)",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-7: System shall store employee details (name, contact, job role, documents).",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-7: System shall store employee details (name, contact, job role, documents)."
+    },
+    {
+      "id": "FR-8",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall support employee profile pictures",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-8: System shall support employee profile pictures.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-8: System shall support employee profile pictures."
+    },
+    {
+      "id": "FR-9",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "Employees shall update personal information (pending approval)",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-9: Employees shall update personal information (pending approval).",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-9: Employees shall update personal information (pending approval)."
+    },
+    {
+      "id": "FR-10",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall provide search and filter for employee records",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-10: System shall provide search and filter for employee records.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-10: System shall provide search and filter for employee records."
+    },
+    {
+      "id": "INF-028",
+      "type": "contextual_information",
+      "role": "Employee",
+      "goal": "- Stimulus: Employee checks in via interface.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Stimulus: Employee checks in via interface.\n- Response: System records check-in time and updates attendance."
+    },
+    {
+      "id": "FR-11",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall track check-in/check-out times",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-11: System shall track check-in/check-out times.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-11: System shall track check-in/check-out times."
+    },
+    {
+      "id": "FR-12",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall generate attendance reports",
+      "reason": null,
+      "confidence": 0.7,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-12: System shall generate attendance reports.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-12: System shall generate attendance reports."
+    },
+    {
+      "id": "FR-13",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "Admins shall edit attendance records manually",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-13: Admins shall edit attendance records manually.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-13: Admins shall edit attendance records manually."
+    },
+    {
+      "id": "FR-14",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall notify for attendance anomalies",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-14: System shall notify for attendance anomalies.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-14: System shall notify for attendance anomalies."
+    },
+    {
+      "id": "FR-15",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall predict attendance patterns using AI",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-15: System shall predict attendance patterns using AI.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-15: System shall predict attendance patterns using AI."
+    },
+    {
+      "id": "INF-034",
+      "type": "contextual_information",
+      "role": "Employee",
+      "goal": "- Stimulus: Employee submits leave request.",
+      "reason": null,
+      "confidence": 0.7999999999999999,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Stimulus: Employee submits leave request.\n- Response: System notifies manager for approval."
+    },
+    {
+      "id": "FR-16",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "Employees shall apply for leave",
+      "reason": null,
+      "confidence": 0.7,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-16: Employees shall apply for leave.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-16: Employees shall apply for leave."
+    },
+    {
+      "id": "FR-17",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "Managers shall approve/reject leave requests",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-17: Managers shall approve/reject leave requests.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-17: Managers shall approve/reject leave requests."
+    },
+    {
+      "id": "FR-18",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall track leave balances",
+      "reason": null,
+      "confidence": 0.7,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-18: System shall track leave balances.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-18: System shall track leave balances."
+    },
+    {
+      "id": "FR-19",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall generate leave reports",
+      "reason": null,
+      "confidence": 0.7,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-19: System shall generate leave reports.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-19: System shall generate leave reports."
+    },
+    {
+      "id": "FR-20",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall predict leave patterns using AI",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-20: System shall predict leave patterns using AI.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-20: System shall predict leave patterns using AI."
+    },
+    {
+      "id": "INF-040",
+      "type": "contextual_information",
+      "role": "Manager",
+      "goal": "- Stimulus: Manager assigns task to employee.",
+      "reason": null,
+      "confidence": 0.7999999999999999,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Stimulus: Manager assigns task to employee.\n- Response: System notifies employee and tracks task progress."
+    },
+    {
+      "id": "FR-21",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "Managers shall create and assign tasks",
+      "reason": null,
+      "confidence": 0.7,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-21: Managers shall create and assign tasks.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-21: Managers shall create and assign tasks."
+    },
+    {
+      "id": "FR-22",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "Employees shall view and update assigned tasks",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-22: Employees shall view and update assigned tasks.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-22: Employees shall view and update assigned tasks."
+    },
+    {
+      "id": "FR-23",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall track task status and completion",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-23: System shall track task status and completion.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-23: System shall track task status and completion."
+    },
+    {
+      "id": "FR-24",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall generate task reports",
+      "reason": null,
+      "confidence": 0.7,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-24: System shall generate task reports.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-24: System shall generate task reports."
+    },
+    {
+      "id": "FR-25",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall optimize task assignments using AI",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-25: System shall optimize task assignments using AI.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-25: System shall optimize task assignments using AI."
+    },
+    {
+      "id": "FR-26",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "Managers shall conduct performance evaluations",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-26: Managers shall conduct performance evaluations.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-26: Managers shall conduct performance evaluations."
+    },
+    {
+      "id": "FR-27",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall store historical performance data",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-27: System shall store historical performance data.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-27: System shall store historical performance data."
+    },
+    {
+      "id": "FR-28",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall generate performance reports",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-28: System shall generate performance reports.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-28: System shall generate performance reports."
+    },
+    {
+      "id": "FR-29",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall predict employee performance using AI",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-29: System shall predict employee performance using AI.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-29: System shall predict employee performance using AI."
+    },
+    {
+      "id": "FR-30",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall recommend performance improvements",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-30: System shall recommend performance improvements.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-30: System shall recommend performance improvements."
+    },
+    {
+      "id": "INF-051",
+      "type": "contextual_information",
+      "role": "Admin",
+      "goal": "- Stimulus: Admin generates payroll for a period.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Stimulus: Admin generates payroll for a period.\n- Response: System calculates salaries and generates payslips."
+    },
+    {
+      "id": "FR-31",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall calculate salaries based on attendance and leave",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-31: System shall calculate salaries based on attendance and leave.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-31: System shall calculate salaries based on attendance and leave."
+    },
+    {
+      "id": "FR-32",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall generate payroll reports",
+      "reason": null,
+      "confidence": 0.7,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-32: System shall generate payroll reports.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-32: System shall generate payroll reports."
+    },
+    {
+      "id": "FR-33",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall track salary history",
+      "reason": null,
+      "confidence": 0.7,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-33: System shall track salary history.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-33: System shall track salary history."
+    },
+    {
+      "id": "FR-34",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall detect payroll anomalies using AI",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-34: System shall detect payroll anomalies using AI.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-34: System shall detect payroll anomalies using AI."
+    },
+    {
+      "id": "FR-35",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall provide salary forecasting",
+      "reason": null,
+      "confidence": 0.7,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-35: System shall provide salary forecasting.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-35: System shall provide salary forecasting."
+    },
+    {
+      "id": "FR-36",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall provide an AI chatbot for queries",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-36: System shall provide an AI chatbot for queries.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-36: System shall provide an AI chatbot for queries."
+    },
+    {
+      "id": "FR-37",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "Chatbot shall respond to common HR queries instantly",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-37: Chatbot shall respond to common HR queries instantly.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-37: Chatbot shall respond to common HR queries instantly."
+    },
+    {
+      "id": "FR-38",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "Chatbot shall escalate complex queries to HR",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-38: Chatbot shall escalate complex queries to HR.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-38: Chatbot shall escalate complex queries to HR."
+    },
+    {
+      "id": "FR-39",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "Chatbot shall learn from interactions",
+      "reason": null,
+      "confidence": 0.7,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-39: Chatbot shall learn from interactions.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-39: Chatbot shall learn from interactions."
+    },
+    {
+      "id": "FR-40",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "Chatbot shall use NLP for query understanding",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-40: Chatbot shall use NLP for query understanding.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-40: Chatbot shall use NLP for query understanding."
+    },
+    {
+      "id": "FR-41",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall analyze feedback for sentiment",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-41: System shall analyze feedback for sentiment.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-41: System shall analyze feedback for sentiment."
+    },
+    {
+      "id": "FR-42",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall generate sentiment reports",
+      "reason": null,
+      "confidence": 0.7,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-42: System shall generate sentiment reports.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-42: System shall generate sentiment reports."
+    },
+    {
+      "id": "FR-43",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall alert managers to negative sentiment",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-43: System shall alert managers to negative sentiment.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-43: System shall alert managers to negative sentiment."
+    },
+    {
+      "id": "FR-44",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall recommend satisfaction improvements",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-44: System shall recommend satisfaction improvements.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-44: System shall recommend satisfaction improvements."
+    },
+    {
+      "id": "FR-45",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall track sentiment trends",
+      "reason": null,
+      "confidence": 0.7,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-45: System shall track sentiment trends.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-45: System shall track sentiment trends."
+    },
+    {
+      "id": "INF-067",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "- Stimulus: System analyzes employee data.",
+      "reason": null,
+      "confidence": 0.7999999999999999,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Stimulus: System analyzes employee data.\n- Response: System identifies high-risk employees and factors."
+    },
+    {
+      "id": "FR-46",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall predict employee churn likelihood",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-46: System shall predict employee churn likelihood.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-46: System shall predict employee churn likelihood."
+    },
+    {
+      "id": "FR-47",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall identify churn factors",
+      "reason": null,
+      "confidence": 0.8999999999999999,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-47: System shall identify churn factors.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-47: System shall identify churn factors."
+    },
+    {
+      "id": "FR-48",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall recommend retention strategies",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-48: System shall recommend retention strategies.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-48: System shall recommend retention strategies."
+    },
+    {
+      "id": "FR-49",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall generate churn prediction reports",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-49: System shall generate churn prediction reports.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-49: System shall generate churn prediction reports."
+    },
+    {
+      "id": "FR-50",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall alert managers to high-risk employees",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-50: System shall alert managers to high-risk employees.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-50: System shall alert managers to high-risk employees."
+    },
+    {
+      "id": "FR-51",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "HR shall post job openings",
+      "reason": null,
+      "confidence": 0.7,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-51: HR shall post job openings.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-51: HR shall post job openings."
+    },
+    {
+      "id": "FR-52",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall track candidate applications",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-52: System shall track candidate applications.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-52: System shall track candidate applications."
+    },
+    {
+      "id": "FR-53",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall rank candidates using AI",
+      "reason": null,
+      "confidence": 0.7,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-53: System shall rank candidates using AI.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-53: System shall rank candidates using AI."
+    },
+    {
+      "id": "FR-54",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall manage interview scheduling",
+      "reason": null,
+      "confidence": 0.7,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-54: System shall manage interview scheduling.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-54: System shall manage interview scheduling."
+    },
+    {
+      "id": "FR-55",
+      "type": "functional_requirement",
+      "role": "System",
+      "goal": "System shall generate recruitment reports",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- FR-55: System shall generate recruitment reports.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- FR-55: System shall generate recruitment reports."
+    },
+    {
+      "id": "INF-078",
+      "type": "contextual_information",
+      "role": "Employee",
+      "goal": "- Login Interface: Secure form with username/password fields.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Login Interface: Secure form with username/password fields.\n- Dashboard: Role-based dashboard with metrics and quick links.\n- Employee Management: Forms for CRUD operations, search/filter options.\n- Attendance Management: Calendar view for check-in/check-out.\n- Leave Management: Forms for leave applications and approvals.\n- Task Management: Task board with drag-and-drop functionality.\n- Performance Evaluation: Evaluation forms and history view.\n- Payroll Management: Salary details and payslip generation."
+    },
+    {
+      "id": "INF-079",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "- AI Insights: Visualizations for predictions and trends.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- AI Insights: Visualizations for predictions and trends.\n- AI Chatbot: Chat window with quick response buttons.\n- Recruitment: Job posting and candidate management forms."
+    },
+    {
+      "id": "INF-080",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "- Server Hardware: Standard server with Apache/Nginx.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Server Hardware: Standard server with Apache/Nginx.\n- Client Hardware: Desktops, laptops, tablets, smartphones with browsers.\n- Biometric Devices (Optional): Fingerprint scanners for attendance."
+    },
+    {
+      "id": "INF-081",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "- Database: MySQL 8.0+ for data storage/retrieval.",
+      "reason": null,
+      "confidence": 0.7999999999999999,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Database: MySQL 8.0+ for data storage/retrieval.\n- Web Server: Apache/Nginx for hosting.\n- AI/ML: Python with Scikit-learn, TensorFlow, PyTorch for model training/inference.\n- API: RESTful API for third-party integration.\n- Notification: SMTP for emails, WebSockets for real-time updates."
+    },
+    {
+      "id": "INF-082",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "- HTTP/HTTPS: Secure web communication.",
+      "reason": null,
+      "confidence": 0.7999999999999999,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- HTTP/HTTPS: Secure web communication.\n- SMTP: Email notifications for approvals and alerts.\n- WebSockets: Real-time chatbot and notifications."
+    },
+    {
+      "id": "NFR-1",
+      "type": "non_functional_requirement",
+      "role": "System",
+      "goal": "System shall support 1000 concurrent users",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- NFR-1: System shall support 1000 concurrent users.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- NFR-1: System shall support 1000 concurrent users."
+    },
+    {
+      "id": "NFR-2",
+      "type": "non_functional_requirement",
+      "role": "User",
+      "goal": "User requests shall respond within 2 seconds",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- NFR-2: User requests shall respond within 2 seconds.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- NFR-2: User requests shall respond within 2 seconds."
+    },
+    {
+      "id": "NFR-3",
+      "type": "non_functional_requirement",
+      "role": "System",
+      "goal": "System shall handle 10,000 employee records",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- NFR-3: System shall handle 10,000 employee records.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- NFR-3: System shall handle 10,000 employee records."
+    },
+    {
+      "id": "NFR-4",
+      "type": "non_functional_requirement",
+      "role": "System",
+      "goal": "AI model inference shall complete within 5 seconds",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- NFR-4: AI model inference shall complete within 5 seconds.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- NFR-4: AI model inference shall complete within 5 seconds."
+    },
+    {
+      "id": "NFR-5",
+      "type": "non_functional_requirement",
+      "role": "System",
+      "goal": "System shall process 100 transactions/second",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- NFR-5: System shall process 100 transactions/second.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- NFR-5: System shall process 100 transactions/second."
+    },
+    {
+      "id": "NFR-6",
+      "type": "non_functional_requirement",
+      "role": "System",
+      "goal": "All sensitive data shall be encrypted (TLS/SSL)",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- NFR-6: All sensitive data shall be encrypted (TLS/SSL).",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- NFR-6: All sensitive data shall be encrypted (TLS/SSL)."
+    },
+    {
+      "id": "NFR-8",
+      "type": "non_functional_requirement",
+      "role": "System",
+      "goal": "System shall maintain audit trails for critical actions",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "- NFR-8: System shall maintain audit trails for critical actions.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- NFR-8: System shall maintain audit trails for critical actions."
+    },
+    {
+      "id": "NFR-9",
+      "type": "non_functional_requirement",
+      "role": "System",
+      "goal": "System shall comply with GDPR and CCPA",
+      "reason": null,
+      "confidence": 0.7,
+      "acceptance_criteria": [
+        {
+          "text": "- NFR-9: System shall comply with GDPR and CCPA.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- NFR-9: System shall comply with GDPR and CCPA."
+    },
+    {
+      "id": "NFR-11",
+      "type": "non_functional_requirement",
+      "role": "System",
+      "goal": "System uptime shall be 99",
+      "reason": null,
+      "confidence": 0.7,
+      "acceptance_criteria": [
+        {
+          "text": "- NFR-11: System uptime shall be 99.9%.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": []
+        }
+      ],
+      "logic": [],
+      "raw_text": "- NFR-11: System uptime shall be 99.9%."
+    },
+    {
+      "id": "INF-092",
+      "type": "contextual_information",
+      "role": "Employee",
+      "goal": "- AI-EMS: AI-Enhanced Employee Management System.",
+      "reason": null,
+      "confidence": 0.7999999999999999,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- AI-EMS: AI-Enhanced Employee Management System.\n- HR: Human Resources.\n- ML: Machine Learning.\n- UI: User Interface.\n- API: Application Programming Interface.\n- DBMS: Database Management System.\n- CRUD: Create, Read, Update, Delete.\n- NLP: Natural Language Processing.\n- SRS: Software Requirements Specification."
+    },
+    {
+      "id": "INF-093",
+      "type": "contextual_information",
+      "role": "Admin",
+      "goal": "- Use Case Diagram: Illustrates interactions between actors (Admin, Manager, Employee) and system functions (e.g., manage employee, predict churn).",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Use Case Diagram: Illustrates interactions between actors (Admin, Manager, Employee) and system functions (e.g., manage employee, predict churn).\n- Activity Diagram: Depicts workflow for AI-powered performance prediction, from data collection to result presentation.\n- Data Flow Diagram (DFD): Shows data flow for key processes like sentiment analysis and task assignment."
+    },
+    {
+      "id": "INF-094",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "- Occasional AI prediction drift due to outdated model weights between scheduled retraining.",
+      "reason": null,
+      "confidence": 0.7999999999999999,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Occasional AI prediction drift due to outdated model weights between scheduled retraining.\n- Email/SMS notification delays under high load, causing late alerts to employees.\n- UI alignment glitch on mobile screens for the Task Management dashboard."
+    },
+    {
+      "id": "INF-095",
+      "type": "contextual_information",
+      "role": "User",
+      "goal": "- Fixed OAuth token refresh bug that caused user sessions to expire unexpectedly (Issue #42).",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Fixed OAuth token refresh bug that caused user sessions to expire unexpectedly (Issue #42).\n- Patched SQL injection vulnerability in the leave-application endpoint (Issue #37).\n- Optimized database indexing on the performance metrics tables, reducing report generation time by 60%.\n- Eliminated memory leak in the AI model serving container through improved resource cleanup (Issue #45)."
+    },
+    {
+      "id": "INF-096",
+      "type": "contextual_information",
+      "role": "Employee",
+      "goal": "- Multilingual support for global accessibility.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Multilingual support for global accessibility.\n- Integration with wearable devices for automated attendance tracking.\n- Advanced AI module for real-time employee wellness monitoring and sentiment analysis.\n- Role-based dashboard customization allowing managers to design bespoke widgets.\n- Offline mode with local caching for field-based employees in low-connectivity areas."
+    }
+  ],
+  "metadata": {
+    "total_stories": 96,
+    "source_file": "F:\\AMRITA ALL SEMESTER\\projects\\SRS Clarity\\backend\\data\\raw_SRS_processed\\stage3_cleaned_md\\3_SRS_Grp6_SREERAM R_clean.md",
+    "extraction_method": "v2_format_agnostic"
+  }
+}

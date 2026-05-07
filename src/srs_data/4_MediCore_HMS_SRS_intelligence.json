@@ -1,0 +1,1526 @@
+{
+  "document_name": "4_MediCore_HMS_SRS",
+  "actors": [
+    "Admin",
+    "System",
+    "User",
+    "primary operational system for the hospital"
+  ],
+  "user_stories": [
+    {
+      "id": "REQ-PAT-01",
+      "type": "unknown",
+      "role": "System",
+      "goal": "shall\" indicate a mandatory requirement that must be implemented for the system to be accepted",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "The requirements outlined in this document follow a structured numbering schema to facilitate traceability. Functional requirements are denoted using the prefix `REQ-` followed by the subsystem abbreviation and a sequential integer (e.g., `REQ-PAT-01` for Patient Management). Statements containing the word \"shall\" indicate a mandatory requirement that must be implemented for the system to be accepted. Statements containing the word \"should\" denote a preferred, though non-mandatory, feature. The font styling conforms to IEEE 830 standards, with bold text utilized strictly for requirement identifiers and critical parameter thresholds."
+    },
+    {
+      "id": "INF-002",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "The system will NOT directly interface with life-support hardware or autonomous surgical robotics; its domain is restricted to data management, workflow orchestration, and informational decision support",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "The MediCore HMS is an enterprise-grade, web-based software platform engineered specifically for multi-facility healthcare institutions. The system's primary objective is to streamline the intricate administrative, clinical, and financial workflows inherent in modern hospital environments. Key capabilities include automated patient onboarding and lifecycle management, intelligent appointment scheduling, secure Electronic Health Record (EHR) maintenance, integrated billing and insurance claims processing, and real-time pharmacy inventory tracking. The MediCore platform seeks to reduce patient wait times, minimize charting errors, optimize resource allocation, and enhance the overall quality of care delivered. The system will NOT directly interface with life-support hardware or autonomous surgical robotics; its domain is restricted to data management, workflow orchestration, and informational decision support."
+    },
+    {
+      "id": "MC-MIG-004",
+      "type": "unknown",
+      "role": "System",
+      "goal": "- Health Insurance Portability and Accountability Act (HIPAA) Security Rule Standards, 2023 Revision. •",
+      "reason": null,
+      "confidence": 0.7999999999999999,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Health Insurance Portability and Accountability Act (HIPAA) Security Rule Standards, 2023 Revision. •\n- HL7 Fast Healthcare Interoperability Resources (FHIR) Specification, Release 4. •\n- IEEE Standard 830-1998, IEEE Recommended Practice for Software Requirements Specifications. •\n- MediCore Internal Legacy Data Migration Strategy Document (Doc Ref: MC-MIG-004). •"
+    },
+    {
+      "id": "INF-004",
+      "type": "contextual_information",
+      "role": "primary operational system for the hospital",
+      "goal": "The architecture will leverage a cloud-hosted infrastructure utilizing a microservices design pattern, ensuring that individual modules (such as pharmacy and billing) can scale independently in response to shifting hospital loads",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "The MediCore HMS is a standalone, web-delivered enterprise application that operates within a centralized client-server architecture. While it functions as the primary operational system for the hospital, it exists within a broader healthcare technology ecosystem. It is required to integrate seamlessly with external third-party services, including regional insurance clearinghouses for claims adjudication, state-level syndromic surveillance registries, and external laboratory diagnostic networks. The system replaces the legacy 'CareTrack v2' application entirely. The architecture will leverage a cloud-hosted infrastructure utilizing a microservices design pattern, ensuring that individual modules (such as pharmacy and billing) can scale independently in response to shifting hospital loads."
+    },
+    {
+      "id": "INF-005",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "- Patient Administration: End-to-end management of demographic data, admission, transfer, and discharge (ADT) workflows, and automated bed allocation. •",
+      "reason": null,
+      "confidence": 0.7999999999999999,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Patient Administration: End-to-end management of demographic data, admission, transfer, and discharge (ADT) workflows, and automated bed allocation. •\n- Clinical Operations: Creation, modification, and secure storage of physician notes, nursing assessments, diagnostic images, and long-term medical histories. •\n- Resource Scheduling: Coordination of physician calendars, operating theater availability, out-patient clinic slots, and high-value diagnostic equipment. •\n- Financial Management: Generation of patient invoices, automated application of insurance coverage rules, copayment processing, and revenue cycle reporting. •\n- Ancillary Services (Pharmacy): Tracking of medication stock levels, prescription fulfillment workflows, expiry date monitoring, and supplier reordering. •"
+    },
+    {
+      "id": "INF-006",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "The system caters to a variety of distinct user roles, each possessing unique interaction patterns and security privileges:",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "The system caters to a variety of distinct user roles, each possessing unique interaction patterns and security privileges:"
+    },
+    {
+      "id": "ICD-10",
+      "type": "unknown",
+      "role": "User",
+      "goal": "The patient dashboard UI should be very intuitive for older doctors who occasionally fill in for administrative duties",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "- Front Desk Receptionists: Characterized by high-volume, rapid-entry data tasks. They require a user interface that is highly optimized for speed and keyboard navigation to manage queues efficiently. The patient dashboard UI should be very intuitive for older doctors who occasionally fill in for administrative duties. •\n- Physicians and Surgeons: Focused almost exclusively on clinical modules. Their interaction is often time-sensitive. They require streamlined data entry for charts and immediate access to longitudinal patient histories. •\n- Nursing Staff: The most frequent users of the system, responsible for continuous bedside charting, medication administration logging, and vital sign tracking. Their interface must support rapid, repetitive entries across multiple patient records within a single shift. •\n- Billing Clerks: Detail-oriented financial personnel handling complex insurance coding (ICD-10/CPT). They require robust search capabilities and dense, data-rich screen layouts to reconcile complex accounts. •\n- System Administrators: IT personnel responsible for user provisioning, system configuration, and audit reviews. They possess the highest level of system access and require complex configuration dashboards. •"
+    },
+    {
+      "id": "INF-008",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "The MediCore HMS backend will be hosted on Linux-based containerized servers (e",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "The MediCore HMS backend will be hosted on Linux-based containerized servers (e.g., Kubernetes on AWS or Azure). The backend relational database will run on PostgreSQL 15 or higher, augmented by a Redis caching layer for high-speed data retrieval. End-users will access the system exclusively via modern web browsers (Google Chrome, Mozilla Firefox, Microsoft Edge) running on Windows 10/11 or macOS workstations. Additionally, a specialized lightweight tablet interface must be supported for mobile nursing stations operating on iOS 15+ and Android 12+ devices over the hospital's internal secure Wi-Fi network."
+    },
+    {
+      "id": "AES-256",
+      "type": "unknown",
+      "role": "System",
+      "goal": "all data at rest must be encrypted using AES-256 standards, and all data in transit must utilize TLS 1",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [
+        {
+          "text": "The development of the MediCore system is bounded by several critical constraints. To ensure absolute compliance with federal healthcare data regulations, all data at rest must be encrypted using AES-256 standards, and all data in transit must utilize TLS 1.3 protocols. Furthermore, the system must be developed using a technology stack approved by the hospital's internal IT steering committee; specifically, the backend must be written in Java (Spring Boot) and the frontend must utilize React.js. The development timeline is strictly constrained, necessitating a phased rollout where the Patient Management and Billing modules must achieve production readiness by Q3 2025.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": [
+            {
+              "type": "conditional",
+              "trigger": {
+                "event": "status_change",
+                "value": "the Patient Management and Billing modules"
+              },
+              "condition": "the Patient Management and Billing modules",
+              "action": {
+                "type": "outcome",
+                "description": "achieve production readiness by Q3 2025"
+              },
+              "result": null,
+              "confidence": 0.85
+            }
+          ]
+        }
+      ],
+      "logic": [
+        {
+          "type": "conditional",
+          "trigger": {
+            "event": "status_change",
+            "value": "the Patient Management and Billing modules"
+          },
+          "condition": "the Patient Management and Billing modules",
+          "action": {
+            "type": "outcome",
+            "description": "achieve production readiness by Q3 2025"
+          },
+          "result": null,
+          "confidence": 0.85
+        }
+      ],
+      "raw_text": "The development of the MediCore system is bounded by several critical constraints. To ensure absolute compliance with federal healthcare data regulations, all data at rest must be encrypted using AES-256 standards, and all data in transit must utilize TLS 1.3 protocols. Furthermore, the system must be developed using a technology stack approved by the hospital's internal IT steering committee; specifically, the backend must be written in Java (Spring Boot) and the frontend must utilize React.js. The development timeline is strictly constrained, necessitating a phased rollout where the Patient Management and Billing modules must achieve production readiness by Q3 2025."
+    },
+    {
+      "id": "INF-010",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "document assumes that the hospital will complete its planned fiber-optic network upgrade prior to system deployment, ensuring sufficient internal bandwidth",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "This requirements document assumes that the hospital will complete its planned fiber-optic network upgrade prior to system deployment, ensuring sufficient internal bandwidth. It is also assumed that all legacy patient records from 'CareTrack v2' will be successfully extracted and mapped to the new database schema by a separate, dedicated data migration team. The system's automated insurance verification feature is entirely dependent on the continued availability and API stability of the 'HealthClear' national claims network."
+    },
+    {
+      "id": "INF-011",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "This module governs the entire lifecycle of a patient's administrative presence within the facility, from initial intake to final discharge. It is the foundational module upon which all other clinical and financial data is anchored.",
+      "reason": null,
+      "confidence": 0.7999999999999999,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "This module governs the entire lifecycle of a patient's administrative presence within the facility, from initial intake to final discharge. It is the foundational module upon which all other clinical and financial data is anchored."
+    },
+    {
+      "id": "REQ-PAT-01",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall provide a centralized digital form to capture comprehensive demographic data, including full legal name, date of birth, biological sex, assigned gender, residential address, primary contact numbers, and emergency contact details",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PAT-01: The system shall provide a centralized digital form to capture comprehensive demographic data, including full legal name, date of birth, biological sex, assigned gender, residential address, primary contact numbers, and emergency contact details."
+    },
+    {
+      "id": "REQ-PAT-02",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The registration module must automatically assign a unique, immutable 10 digit Medical Record Number (MRN) to every newly registered patient upon successful form submission",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PAT-02: The registration module must automatically assign a unique, immutable 10 digit Medical Record Number (MRN) to every newly registered patient upon successful form submission."
+    },
+    {
+      "id": "REQ-PAT-03",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall verify the uniqueness of a patient record by performing an algorithmic comparison against existing database entries utilizing a combination of Last Name, Date of Birth, and Social Security Number (or equivalent national ID) to preven",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PAT-03: The system shall verify the uniqueness of a patient record by performing an algorithmic comparison against existing database entries utilizing a combination of Last Name, Date of Birth, and Social Security Number (or equivalent national ID) to prevent duplicate profiles."
+    },
+    {
+      "id": "REQ-PAT-04",
+      "type": "unknown",
+      "role": "System",
+      "goal": "REQ-PAT-04: Ensure robust data validation on all patient intake forms before saving the record to the main database.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PAT-04: Ensure robust data validation on all patient intake forms before saving the record to the main database."
+    },
+    {
+      "id": "REQ-PAT-05",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall support capturing and storing a digital photograph of the patient via integrated webcams to aid in visual identification during subsequent visits",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PAT-05: The system shall support capturing and storing a digital photograph of the patient via integrated webcams to aid in visual identification during subsequent visits."
+    },
+    {
+      "id": "REQ-PAT-06",
+      "type": "unknown",
+      "role": "System",
+      "goal": "system shall display a real-time, interactive floor map indicating the occupancy status of all hospital beds (Occupied, Available, Needs Cleaning, Maintenance)",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PAT-06: The bed management sub-system shall display a real-time, interactive floor map indicating the occupancy status of all hospital beds (Occupied, Available, Needs Cleaning, Maintenance)."
+    },
+    {
+      "id": "REQ-PAT-07",
+      "type": "unknown",
+      "role": "System",
+      "goal": "the system shall automatically recommend an available bed based on the required care level (e",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "REQ-PAT-07: When an admission order is entered by a physician, the system shall automatically recommend an available bed based on the required care level (e.g., ICU, Maternity, General Ward) and patient gender.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": [
+            {
+              "type": "conditional",
+              "trigger": {
+                "event": "status_change",
+                "value": "an admission order is entered by a physician"
+              },
+              "condition": "an admission order is entered by a physician",
+              "action": {
+                "type": "outcome",
+                "description": "the system shall automatically recommend an available bed based on the required care level (e"
+              },
+              "result": null,
+              "confidence": 0.85
+            }
+          ]
+        }
+      ],
+      "logic": [
+        {
+          "type": "conditional",
+          "trigger": {
+            "event": "status_change",
+            "value": "an admission order is entered by a physician"
+          },
+          "condition": "an admission order is entered by a physician",
+          "action": {
+            "type": "outcome",
+            "description": "the system shall automatically recommend an available bed based on the required care level (e"
+          },
+          "result": null,
+          "confidence": 0.85
+        }
+      ],
+      "raw_text": "REQ-PAT-07: When an admission order is entered by a physician, the system shall automatically recommend an available bed based on the required care level (e.g., ICU, Maternity, General Ward) and patient gender."
+    },
+    {
+      "id": "REQ-PAT-08",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall generate and print standardized wristband labels containing a scannable 2D barcode, the patient's full name, MRN, and known severe allergies immediately upon admission",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PAT-08: The system shall generate and print standardized wristband labels containing a scannable 2D barcode, the patient's full name, MRN, and known severe allergies immediately upon admission."
+    },
+    {
+      "id": "REQ-PAT-09",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The patient discharge workflow needs to be fast enough to not disrupt the ward workflow during peak morning hours",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PAT-09: The patient discharge workflow needs to be fast enough to not disrupt the ward workflow during peak morning hours."
+    },
+    {
+      "id": "REQ-PAT-10",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall maintain an immutable history log of all inter-ward patient transfers, including the timestamp, the authorizing physician, and the personnel executing the transfer",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PAT-10: The system shall maintain an immutable history log of all inter-ward patient transfers, including the timestamp, the authorizing physician, and the personnel executing the transfer."
+    },
+    {
+      "id": "REQ-PAT-11",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall allow authorized users to merge duplicate patient records",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PAT-11: The system shall allow authorized users to merge duplicate patient records. This action must preserve all clinical data from both records, linking them under the older, primary MRN."
+    },
+    {
+      "id": "REQ-PAT-12",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall provide a global search bar accessible from all administrative screens allowing staff to locate patients using partial name matches or MRN inputs",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PAT-12: The system shall provide a global search bar accessible from all administrative screens allowing staff to locate patients using partial name matches or MRN inputs."
+    },
+    {
+      "id": "INF-024",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "The scheduling module coordinates the complex calendars of hundreds of providers, specialist equipment, and physical clinical spaces to optimize throughput and minimize patient wait times.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "The scheduling module coordinates the complex calendars of hundreds of providers, specialist equipment, and physical clinical spaces to optimize throughput and minimize patient wait times."
+    },
+    {
+      "id": "REQ-SCH-01",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall provide a graphical calendar interface displaying the daily, weekly, and monthly availability of all registered healthcare providers",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-SCH-01: The system shall provide a graphical calendar interface displaying the daily, weekly, and monthly availability of all registered healthcare providers."
+    },
+    {
+      "id": "REQ-SCH-02",
+      "type": "unknown",
+      "role": "System",
+      "goal": "Users shall be able to filter the provider calendar by department, specialty, specific physician name, or location",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-SCH-02: Users shall be able to filter the provider calendar by department, specialty, specific physician name, or location."
+    },
+    {
+      "id": "REQ-SCH-03",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall automatically calculate and block out required buffer times between appointments based on the specific appointment type (e",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-SCH-03: The system shall automatically calculate and block out required buffer times between appointments based on the specific appointment type (e.g., 15 minutes for followup, 45 minutes for new patient consult)."
+    },
+    {
+      "id": "REQ-SCH-04",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall allow patients and front-desk administrators to book regular consultation appointments up to 6 months in advance of the current date",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-SCH-04: The system shall allow patients and front-desk administrators to book regular consultation appointments up to 6 months in advance of the current date."
+    },
+    {
+      "id": "REQ-SCH-05",
+      "type": "unknown",
+      "role": "System",
+      "goal": "the system shall automatically dispatch a confirmation notification to the patient via SMS and email, provided contact details are present",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-SCH-05: Upon the successful scheduling of an appointment, the system shall automatically dispatch a confirmation notification to the patient via SMS and email, provided contact details are present."
+    },
+    {
+      "id": "REQ-SCH-06",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall send automated appointment reminders 48 hours and 12 hours prior to the scheduled encounter time",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-SCH-06: The system shall send automated appointment reminders 48 hours and 12 hours prior to the scheduled encounter time."
+    },
+    {
+      "id": "REQ-SCH-07",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall allow administrators to configure complex recurring schedules for providers, accounting for alternating weeks, on-call rotations, and designated administrative days",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-SCH-07: The system shall allow administrators to configure complex recurring schedules for providers, accounting for alternating weeks, on-call rotations, and designated administrative days."
+    },
+    {
+      "id": "REQ-SCH-08",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system must support multi-resource scheduling, allowing a single booking to reserve a physician, a specific examination room, and a piece of diagnostic equipment (e",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-SCH-08: The system must support multi-resource scheduling, allowing a single booking to reserve a physician, a specific examination room, and a piece of diagnostic equipment (e.g., Ultrasound machine) simultaneously."
+    },
+    {
+      "id": "REQ-SCH-09",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall maintain a digital waitlist for fully booked days, automatically notifying waitlisted patients if a previously scheduled slot becomes available due to a cancellation",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-SCH-09: The system shall maintain a digital waitlist for fully booked days, automatically notifying waitlisted patients if a previously scheduled slot becomes available due to a cancellation."
+    },
+    {
+      "id": "REQ-SCH-10",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The module must strictly enforce provider-defined maximum daily limits for specific complex procedure types to prevent physician fatigue",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-SCH-10: The module must strictly enforce provider-defined maximum daily limits for specific complex procedure types to prevent physician fatigue."
+    },
+    {
+      "id": "REQ-SCH-11",
+      "type": "unknown",
+      "role": "System",
+      "goal": "the system shall provide a bulk-rescheduling utility to rapidly notify affected patients and offer alternative dates with other available providers in the same department",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [
+        {
+          "text": "REQ-SCH-11: When a provider calls in sick, the system shall provide a bulk-rescheduling utility to rapidly notify affected patients and offer alternative dates with other available providers in the same department.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": [
+            {
+              "type": "conditional",
+              "trigger": {
+                "event": "status_change",
+                "value": "a provider calls in sick"
+              },
+              "condition": "a provider calls in sick",
+              "action": {
+                "type": "outcome",
+                "description": "the system shall provide a bulk-rescheduling utility to rapidly notify affected patients and offer alternative dates with other available providers in the same department"
+              },
+              "result": null,
+              "confidence": 0.85
+            }
+          ]
+        }
+      ],
+      "logic": [
+        {
+          "type": "conditional",
+          "trigger": {
+            "event": "status_change",
+            "value": "a provider calls in sick"
+          },
+          "condition": "a provider calls in sick",
+          "action": {
+            "type": "outcome",
+            "description": "the system shall provide a bulk-rescheduling utility to rapidly notify affected patients and offer alternative dates with other available providers in the same department"
+          },
+          "result": null,
+          "confidence": 0.85
+        }
+      ],
+      "raw_text": "REQ-SCH-11: When a provider calls in sick, the system shall provide a bulk-rescheduling utility to rapidly notify affected patients and offer alternative dates with other available providers in the same department."
+    },
+    {
+      "id": "INF-036",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "making and must present dense medical information clearly and accurately",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "The EHR module is the clinical core of the system, securely housing all longitudinal medical data. It is critical for clinical decision-making and must present dense medical information clearly and accurately."
+    },
+    {
+      "id": "REQ-EHR-01",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall provide a comprehensive clinical dashboard for each patient, summarizing active problem lists, current medications, recent vital signs, and pending lab results on a single screen",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-EHR-01: The system shall provide a comprehensive clinical dashboard for each patient, summarizing active problem lists, current medications, recent vital signs, and pending lab results on a single screen."
+    },
+    {
+      "id": "REQ-EHR-02",
+      "type": "unknown",
+      "role": "System",
+      "goal": "Physicians shall be able to create structured clinical notes using pre-defined, customizable templates tailored to specific medical specialties (e",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-EHR-02: Physicians shall be able to create structured clinical notes using pre-defined, customizable templates tailored to specific medical specialties (e.g., Cardiology, Orthopedics)."
+    },
+    {
+      "id": "REQ-EHR-03",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall support rich-text formatting within clinical notes, allowing for bolding, bullet points, and the embedding of small diagnostic image thumbnails",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-EHR-03: The system shall support rich-text formatting within clinical notes, allowing for bolding, bullet points, and the embedding of small diagnostic image thumbnails."
+    },
+    {
+      "id": "REQ-EHR-04",
+      "type": "unknown",
+      "role": "System",
+      "goal": "All finalized clinical notes must be electronically signed by the authoring provider, utilizing a secure PIN or biometric authentication, after which the note becomes a locked, legally binding document",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-EHR-04: All finalized clinical notes must be electronically signed by the authoring provider, utilizing a secure PIN or biometric authentication, after which the note becomes a locked, legally binding document."
+    },
+    {
+      "id": "REQ-EHR-05",
+      "type": "unknown",
+      "role": "System",
+      "goal": "the system shall permit the creation of a formal addendum",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [
+        {
+          "text": "REQ-EHR-05: If an error is discovered in a signed note, the system shall permit the creation of a formal addendum. The original note must never be deleted or overwritten, maintaining complete clinical provenance.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": [
+            {
+              "type": "conditional",
+              "trigger": {
+                "event": "status_change",
+                "value": "an error is discovered in a signed note"
+              },
+              "condition": "an error is discovered in a signed note",
+              "action": {
+                "type": "outcome",
+                "description": "the system shall permit the creation of a formal addendum"
+              },
+              "result": null,
+              "confidence": 0.85
+            }
+          ]
+        }
+      ],
+      "logic": [
+        {
+          "type": "conditional",
+          "trigger": {
+            "event": "status_change",
+            "value": "an error is discovered in a signed note"
+          },
+          "condition": "an error is discovered in a signed note",
+          "action": {
+            "type": "outcome",
+            "description": "the system shall permit the creation of a formal addendum"
+          },
+          "result": null,
+          "confidence": 0.85
+        }
+      ],
+      "raw_text": "REQ-EHR-05: If an error is discovered in a signed note, the system shall permit the creation of a formal addendum. The original note must never be deleted or overwritten, maintaining complete clinical provenance."
+    },
+    {
+      "id": "REQ-EHR-06",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall include an integrated Computerized Provider Order Entry (CPOE) module for prescribing medications, ordering laboratory tests, and requesting radiological imaging",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-EHR-06: The system shall include an integrated Computerized Provider Order Entry (CPOE) module for prescribing medications, ordering laboratory tests, and requesting radiological imaging."
+    },
+    {
+      "id": "REQ-EHR-07",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The CPOE module shall automatically execute drug-drug interaction (DDI) and drug-allergy interaction checks against the patient's profile, displaying a high-visibility warning to the physician if a conflict is detected",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-EHR-07: The CPOE module shall automatically execute drug-drug interaction (DDI) and drug-allergy interaction checks against the patient's profile, displaying a high-visibility warning to the physician if a conflict is detected."
+    },
+    {
+      "id": "REQ-EHR-08",
+      "type": "unknown",
+      "role": "System",
+      "goal": "who have been formally discharged shall be archived immediately upon the physician signing the discharge summary to keep the active database lean",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-EHR-08: Records of patients who have been formally discharged shall be archived immediately upon the physician signing the discharge summary to keep the active database lean."
+    },
+    {
+      "id": "REQ-EHR-09",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall plot vital signs (temperature, blood pressure, heart rate, oxygen saturation) on interactive graphical flowsheets, allowing clinicians to easily identify physiological trends over time",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-EHR-09: The system shall plot vital signs (temperature, blood pressure, heart rate, oxygen saturation) on interactive graphical flowsheets, allowing clinicians to easily identify physiological trends over time."
+    },
+    {
+      "id": "REQ-EHR-10",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The EHR module shall support the ingestion and rendering of external laboratory reports formatted in standard HL7 V2",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-EHR-10: The EHR module shall support the ingestion and rendering of external laboratory reports formatted in standard HL7 V2.x messaging standards."
+    },
+    {
+      "id": "REQ-EHR-11",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The database search function must be quick when doctors are trying to find historical data for a specific patient",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-EHR-11: The database search function must be quick when doctors are trying to find historical data for a specific patient."
+    },
+    {
+      "id": "REQ-EHR-12",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall provide an export utility to package a patient's complete medical history into a standard Continuity of Care Document (CCD) XML format for secure transmission to external healthcare providers",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-EHR-12: The system shall provide an export utility to package a patient's complete medical history into a standard Continuity of Care Document (CCD) XML format for secure transmission to external healthcare providers."
+    },
+    {
+      "id": "INF-049",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "The financial lifeline of the institution. This module translates clinical encounters into billable events, managing insurance claims and patient out-of-pocket expenses.",
+      "reason": null,
+      "confidence": 0.7999999999999999,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "The financial lifeline of the institution. This module translates clinical encounters into billable events, managing insurance claims and patient out-of-pocket expenses."
+    },
+    {
+      "id": "REQ-BIL-01",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall automatically aggregate all billable items, including room charges, medication administrations, surgical procedures, and physician consults, into a unified draft invoice upon patient discharge",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-BIL-01: The system shall automatically aggregate all billable items, including room charges, medication administrations, surgical procedures, and physician consults, into a unified draft invoice upon patient discharge."
+    },
+    {
+      "id": "REQ-BIL-02",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The billing module must enforce standard ICD-10 and CPT coding validation to ensure that submitted claims meet baseline structural requirements before transmission to payers",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-BIL-02: The billing module must enforce standard ICD-10 and CPT coding validation to ensure that submitted claims meet baseline structural requirements before transmission to payers."
+    },
+    {
+      "id": "REQ-BIL-03",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall support split-billing functionality, accurately dividing a total invoice between a primary insurance payer, a secondary insurance payer, and the patient's out-of-pocket responsibility",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-BIL-03: The system shall support split-billing functionality, accurately dividing a total invoice between a primary insurance payer, a secondary insurance payer, and the patient's out-of-pocket responsibility."
+    },
+    {
+      "id": "REQ-BIL-04",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall generate standardized X12 837 claim files for electronic batch submission to the regional insurance clearinghouse",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-BIL-04: The system shall generate standardized X12 837 claim files for electronic batch submission to the regional insurance clearinghouse."
+    },
+    {
+      "id": "REQ-BIL-05",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system must process incoming X12 835 Electronic Remittance Advice (ERA) files, automatically updating invoice statuses to Paid, Denied, or Partially Paid based on the payer's response",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-BIL-05: The system must process incoming X12 835 Electronic Remittance Advice (ERA) files, automatically updating invoice statuses to Paid, Denied, or Partially Paid based on the payer's response."
+    },
+    {
+      "id": "REQ-BIL-06",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall maintain an updated, centralized fee schedule, allowing authorized financial administrators to universally update the pricing of specific procedures or consumables",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-BIL-06: The system shall maintain an updated, centralized fee schedule, allowing authorized financial administrators to universally update the pricing of specific procedures or consumables."
+    },
+    {
+      "id": "REQ-BIL-07",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall generate comprehensive revenue cycle reports, including Aging Accounts Receivable, Daily Cash Collections, and Insurance Denial Rate metrics",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-BIL-07: The system shall generate comprehensive revenue cycle reports, including Aging Accounts Receivable, Daily Cash Collections, and Insurance Denial Rate metrics."
+    },
+    {
+      "id": "REQ-BIL-08",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall provide a secure, public-facing portal allowing patients to view their outstanding balances and submit payments via credit card or digital wallets",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-BIL-08: The system shall provide a secure, public-facing portal allowing patients to view their outstanding balances and submit payments via credit card or digital wallets."
+    },
+    {
+      "id": "REQ-BIL-09",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The application will try to prevent unauthorized access to the billing module from non-financial staff members",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-BIL-09: The application will try to prevent unauthorized access to the billing module from non-financial staff members."
+    },
+    {
+      "id": "REQ-BIL-10",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall automatically flag and queue unpaid patient balances exceeding 120 days for review by the internal collections department",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-BIL-10: The system shall automatically flag and queue unpaid patient balances exceeding 120 days for review by the internal collections department."
+    },
+    {
+      "id": "INF-060",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "This module maintains precise control over the hospital's medication repository, tracking supply levels, expiry dates, and regulatory compliance for controlled substances.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "This module maintains precise control over the hospital's medication repository, tracking supply levels, expiry dates, and regulatory compliance for controlled substances."
+    },
+    {
+      "id": "REQ-PHR-01",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall maintain a master formulary database containing all medications approved for use within the hospital, including generic names, brand names, dosages, and administration routes",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PHR-01: The system shall maintain a master formulary database containing all medications approved for use within the hospital, including generic names, brand names, dosages, and administration routes."
+    },
+    {
+      "id": "REQ-PHR-02",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall track the real-time physical inventory levels of all stocked medications across the central pharmacy and distributed ward-level dispensing cabinets",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PHR-02: The system shall track the real-time physical inventory levels of all stocked medications across the central pharmacy and distributed ward-level dispensing cabinets."
+    },
+    {
+      "id": "REQ-PHR-03",
+      "type": "unknown",
+      "role": "System",
+      "goal": "the system shall automatically deduct the corresponding quantities from the appropriate inventory location",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PHR-03: As medications are electronically administered and logged by nursing staff in the EHR, the system shall automatically deduct the corresponding quantities from the appropriate inventory location."
+    },
+    {
+      "id": "REQ-PHR-04",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall monitor medication expiration dates and generate automated alerts to pharmacy staff 30 days, 15 days, and 1 day prior to the expiration of any batch in inventory",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PHR-04: The system shall monitor medication expiration dates and generate automated alerts to pharmacy staff 30 days, 15 days, and 1 day prior to the expiration of any batch in inventory."
+    },
+    {
+      "id": "REQ-PHR-05",
+      "type": "unknown",
+      "role": "User",
+      "goal": "The module must maintain a strict, immutable chain-of-custody log for all Schedule II through V controlled substances, requiring dual-user authentication for dispensing and disposal events",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PHR-05: The module must maintain a strict, immutable chain-of-custody log for all Schedule II through V controlled substances, requiring dual-user authentication for dispensing and disposal events."
+    },
+    {
+      "id": "REQ-PHR-06",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall utilize predictive algorithms based on historical consumption patterns to generate suggested purchase orders when inventory levels fall below defined safety thresholds",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PHR-06: The system shall utilize predictive algorithms based on historical consumption patterns to generate suggested purchase orders when inventory levels fall below defined safety thresholds."
+    },
+    {
+      "id": "REQ-PHR-07",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall support the scanning of GS1 DataMatrix barcodes on incoming pharmaceutical shipments to rapidly ingest lot numbers, expiry dates, and quantities into the database",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PHR-07: The system shall support the scanning of GS1 DataMatrix barcodes on incoming pharmaceutical shipments to rapidly ingest lot numbers, expiry dates, and quantities into the database."
+    },
+    {
+      "id": "INF-068",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "The interface design must prioritize clarity, density of information, and reduced visual fatigue for users working long shifts",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "The primary mode of interaction is via standard web browsers. The interface design must prioritize clarity, density of information, and reduced visual fatigue for users working long shifts."
+    },
+    {
+      "id": "REQ-UI-01",
+      "type": "unknown",
+      "role": "User",
+      "goal": "The application layout must be user-friendly and adhere to standard accessibility guidelines (WCAG 2",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-UI-01: The application layout must be user-friendly and adhere to standard accessibility guidelines (WCAG 2.1 AA), providing sufficient color contrast and support for screen readers."
+    },
+    {
+      "id": "REQ-UI-02",
+      "type": "unknown",
+      "role": "User",
+      "goal": "REQ-UI-02: It is recommended that the user interface is responsive on smaller screens for staff using mobile devices on the go.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-UI-02: It is recommended that the user interface is responsive on smaller screens for staff using mobile devices on the go."
+    },
+    {
+      "id": "REQ-UI-03",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall employ a consistent navigation paradigm, featuring a persistent global top bar for searching and a collapsible left-hand sidebar for module switching",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-UI-03: The system shall employ a consistent navigation paradigm, featuring a persistent global top bar for searching and a collapsible left-hand sidebar for module switching."
+    },
+    {
+      "id": "REQ-UI-04",
+      "type": "unknown",
+      "role": "User",
+      "goal": "must employ a high-visibility modal design that requires explicit user acknowledgement to dismiss",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-UI-04: All critical alert dialogs, such as allergy warnings or severe drug interactions, must employ a high-visibility modal design that requires explicit user acknowledgement to dismiss."
+    },
+    {
+      "id": "INF-073",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "The system must interact with several pieces of physical hospital equipment to streamline data entry and improve safety",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "The system must interact with several pieces of physical hospital equipment to streamline data entry and improve safety."
+    },
+    {
+      "id": "REQ-HW-01",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall interface with standard USB and Bluetooth 2D barcode scanners to facilitate wristband scanning and medication verification",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-HW-01: The system shall interface with standard USB and Bluetooth 2D barcode scanners to facilitate wristband scanning and medication verification."
+    },
+    {
+      "id": "REQ-HW-02",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The software must be capable of receiving automated vital sign data streams via RS-232 or network protocols directly from compatible bedside patient monitors in the Intensive Care Unit",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-HW-02: The software must be capable of receiving automated vital sign data streams via RS-232 or network protocols directly from compatible bedside patient monitors in the Intensive Care Unit."
+    },
+    {
+      "id": "REQ-HW-03",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall support integration with standard thermal label printers for the generation of patient wristbands and pharmacy specimen labels",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-HW-03: The system shall support integration with standard thermal label printers for the generation of patient wristbands and pharmacy specimen labels."
+    },
+    {
+      "id": "REQ-SW-01",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall expose a secure RESTful API secured by OAuth 2",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-SW-01: The system shall expose a secure RESTful API secured by OAuth 2.0 to allow authorized third-party analytics platforms to extract anonymized, aggregated demographic data."
+    },
+    {
+      "id": "REQ-SW-02",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall connect to the National Prescription Drug Monitoring Program (PDMP) via a SOAP web service to query a patient's historical narcotic prescriptions before new orders are finalized",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-SW-02: The system shall connect to the National Prescription Drug Monitoring Program (PDMP) via a SOAP web service to query a patient's historical narcotic prescriptions before new orders are finalized."
+    },
+    {
+      "id": "REQ-COM-01",
+      "type": "unknown",
+      "role": "System",
+      "goal": "browsers and the backend servers must be encrypted using TLS 1",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-COM-01: All network traffic between the client browsers and the backend servers must be encrypted using TLS 1.3 or higher."
+    },
+    {
+      "id": "REQ-COM-02",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall integrate with a third-party SMS gateway via HTTPS API to deliver automated appointment reminders and urgent staff broadcast messages",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-COM-02: The system shall integrate with a third-party SMS gateway via HTTPS API to deliver automated appointment reminders and urgent staff broadcast messages."
+    },
+    {
+      "id": "INF-081",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "System performance is critical in a clinical setting where delays can directly impact patient care and operational throughput.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "System performance is critical in a clinical setting where delays can directly impact patient care and operational throughput."
+    },
+    {
+      "id": "REQ-PERF-01",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system should load patient history pages quickly to avoid frustrating the medical staff during rounds",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PERF-01: The system should load patient history pages quickly to avoid frustrating the medical staff during rounds."
+    },
+    {
+      "id": "REQ-PERF-02",
+      "type": "unknown",
+      "role": "System",
+      "goal": "shall return results to the UI in under 1",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PERF-02: Under normal operating conditions, 95% of all standard database queries (e.g., loading a schedule, viewing a demographic profile) shall return results to the UI in under 1.5 seconds."
+    },
+    {
+      "id": "REQ-PERF-03",
+      "type": "unknown",
+      "role": "System",
+      "goal": "and critical patient status notifications shall override all other UI elements and be delivered to the client within 2 seconds of the triggering event",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PERF-03: Emergency ward alerts and critical patient status notifications shall override all other UI elements and be delivered to the client within 2 seconds of the triggering event."
+    },
+    {
+      "id": "REQ-PERF-04",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall support a minimum of 2,500 concurrent active users executing standard read/write workflows without degrading application response times beyond the 1",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PERF-04: The system shall support a minimum of 2,500 concurrent active users executing standard read/write workflows without degrading application response times beyond the 1.5-second threshold."
+    },
+    {
+      "id": "REQ-PERF-05",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The application will handle a large number of concurrent users efficiently during the morning shift changes",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PERF-05: The application will handle a large number of concurrent users efficiently during the morning shift changes."
+    },
+    {
+      "id": "REQ-PERF-06",
+      "type": "unknown",
+      "role": "System",
+      "goal": "wide financial summary report shall take no longer than 15 minutes of background processing time",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PERF-06: Generating the complex monthly hospital-wide financial summary report shall take no longer than 15 minutes of background processing time."
+    },
+    {
+      "id": "REQ-PERF-07",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The backend database should be scalable to accommodate future hospital growth and the acquisition of smaller satellite clinics",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PERF-07: The backend database should be scalable to accommodate future hospital growth and the acquisition of smaller satellite clinics."
+    },
+    {
+      "id": "REQ-PERF-08",
+      "type": "unknown",
+      "role": "System",
+      "goal": "REQ-PERF-08: System notifications, including emergency codes and broadcast messages, have a maximum allowed latency of 5 seconds under high system load.",
+      "reason": null,
+      "confidence": 0.7999999999999999,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-PERF-08: System notifications, including emergency codes and broadcast messages, have a maximum allowed latency of 5 seconds under high system load."
+    },
+    {
+      "id": "INF-090",
+      "type": "contextual_information",
+      "role": "System",
+      "goal": "The system must rigorously defend Patient Health Information (PHI) against unauthorized access and exfiltration",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "Healthcare systems are prime targets for cyberattacks. The system must rigorously defend Patient Health Information (PHI) against unauthorized access and exfiltration."
+    },
+    {
+      "id": "REQ-SEC-01",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall enforce strict Role-Based Access Control (RBAC), ensuring users can only access modules and data strictly necessary for their defined job functions",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-SEC-01: The system shall enforce strict Role-Based Access Control (RBAC), ensuring users can only access modules and data strictly necessary for their defined job functions."
+    },
+    {
+      "id": "REQ-SEC-02",
+      "type": "unknown",
+      "role": "System",
+      "goal": "All passwords must conform to a minimum complexity standard: at least 12 characters, containing a mix of uppercase, lowercase, numerical, and special characters",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-SEC-02: All passwords must conform to a minimum complexity standard: at least 12 characters, containing a mix of uppercase, lowercase, numerical, and special characters."
+    },
+    {
+      "id": "REQ-SEC-03",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall automatically terminate an active user session and force a logout after 15 minutes of uninterrupted input inactivity",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-SEC-03: The system shall automatically terminate an active user session and force a logout after 15 minutes of uninterrupted input inactivity."
+    },
+    {
+      "id": "REQ-SEC-04",
+      "type": "unknown",
+      "role": "System",
+      "goal": "authenticator app or SMS token shall be mandatory for any access originating from outside the hospital's internal IP range",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-SEC-04: Multi-Factor Authentication (MFA) via a mobile authenticator app or SMS token shall be mandatory for any access originating from outside the hospital's internal IP range."
+    },
+    {
+      "id": "REQ-SEC-05",
+      "type": "unknown",
+      "role": "User",
+      "goal": "all user passwords must be changed every 30 days without exception",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-SEC-05: For compliance with internal security policies, all user passwords must be changed every 30 days without exception."
+    },
+    {
+      "id": "REQ-SEC-06",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall maintain an immutable, tamper-evident audit log recording every instance of PHI access, modification, or deletion, including the user ID, timestamp, and IP address",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-SEC-06: The system shall maintain an immutable, tamper-evident audit log recording every instance of PHI access, modification, or deletion, including the user ID, timestamp, and IP address."
+    },
+    {
+      "id": "REQ-SEC-07",
+      "type": "unknown",
+      "role": "System",
+      "goal": "Database backups should be done seamlessly without disturbing users during their daily operations",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-SEC-07: Database backups should be done seamlessly without disturbing users during their daily operations."
+    },
+    {
+      "id": "REQ-SEC-08",
+      "type": "unknown",
+      "role": "System",
+      "goal": "All stored PHI data shall be encrypted at rest using AES-256 encryption",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-SEC-08: All stored PHI data shall be encrypted at rest using AES-256 encryption. Key management shall be handled by a dedicated Hardware Security Module (HSM)."
+    },
+    {
+      "id": "REQ-SEC-09",
+      "type": "unknown",
+      "role": "Admin",
+      "goal": "Admin users shall have full, unrestricted read access to the system-wide audit logs to monitor platform usage and investigate security incidents",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-SEC-09: Admin users shall have full, unrestricted read access to the system-wide audit logs to monitor platform usage and investigate security incidents."
+    },
+    {
+      "id": "REQ-SEC-10",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall feature automated lockout mechanisms, disabling a user account for 30 minutes after five consecutive failed login attempts",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-SEC-10: The system shall feature automated lockout mechanisms, disabling a user account for 30 minutes after five consecutive failed login attempts."
+    },
+    {
+      "id": "REQ-SEC-11",
+      "type": "unknown",
+      "role": "User",
+      "goal": "User authentication credentials shall remain valid for 90 days before the system prompts for a mandatory reset",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-SEC-11: User authentication credentials shall remain valid for 90 days before the system prompts for a mandatory reset."
+    },
+    {
+      "id": "REQ-SEC-12",
+      "type": "unknown",
+      "role": "System",
+      "goal": "REQ-SEC-12: System Administrators are the only roles permitted to view security audit logs; general Admin users cannot access this module due to privacy constraints.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-SEC-12: System Administrators are the only roles permitted to view security audit logs; general Admin users cannot access this module due to privacy constraints."
+    },
+    {
+      "id": "REQ-REL-01",
+      "type": "unknown",
+      "role": "System",
+      "goal": "Uptime for the main portal needs to be high to support continuous clinical operations",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-REL-01: Uptime for the main portal needs to be high to support continuous clinical operations."
+    },
+    {
+      "id": "REQ-REL-02",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The core system infrastructure shall guarantee a 99",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-REL-02: The core system infrastructure shall guarantee a 99.95% uptime SLA, allowing for no more than 4.38 hours of unplanned downtime per year."
+    },
+    {
+      "id": "REQ-REL-03",
+      "type": "unknown",
+      "role": "System",
+      "goal": "the system shall seamlessly failover to a geographically redundant backup site within 5 minutes, with zero data loss (RPO = 0, RTO = 5 mins)",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-REL-03: In the event of a catastrophic primary data center failure, the system shall seamlessly failover to a geographically redundant backup site within 5 minutes, with zero data loss (RPO = 0, RTO = 5 mins)."
+    },
+    {
+      "id": "REQ-REL-04",
+      "type": "unknown",
+      "role": "System",
+      "goal": "local workstation caching shall support up to 50 concurrent transactions before requiring a hard lock on further data entry",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [
+        {
+          "text": "REQ-REL-04: If the central server connection is lost, local workstation caching shall support up to 50 concurrent transactions before requiring a hard lock on further data entry.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": [
+            {
+              "type": "conditional",
+              "trigger": {
+                "event": "status_change",
+                "value": "the central server connection is lost"
+              },
+              "condition": "the central server connection is lost",
+              "action": {
+                "type": "outcome",
+                "description": "local workstation caching shall support up to 50 concurrent transactions before requiring a hard lock on further data entry"
+              },
+              "result": null,
+              "confidence": 0.85
+            }
+          ]
+        }
+      ],
+      "logic": [
+        {
+          "type": "conditional",
+          "trigger": {
+            "event": "status_change",
+            "value": "the central server connection is lost"
+          },
+          "condition": "the central server connection is lost",
+          "action": {
+            "type": "outcome",
+            "description": "local workstation caching shall support up to 50 concurrent transactions before requiring a hard lock on further data entry"
+          },
+          "result": null,
+          "confidence": 0.85
+        }
+      ],
+      "raw_text": "REQ-REL-04: If the central server connection is lost, local workstation caching shall support up to 50 concurrent transactions before requiring a hard lock on further data entry."
+    },
+    {
+      "id": "REQ-REL-05",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall undergo automated, daily full backups at 02:00 AM, with incremental backups occurring every 15 minutes",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-REL-05: The system shall undergo automated, daily full backups at 02:00 AM, with incremental backups occurring every 15 minutes."
+    },
+    {
+      "id": "REQ-REL-06",
+      "type": "unknown",
+      "role": "System",
+      "goal": "the system must seamlessly cache up to 100 concurrent transactions locally to maintain operational continuity in the emergency department",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [
+        {
+          "text": "REQ-REL-06: During network disconnection events or wide-area network outages, the system must seamlessly cache up to 100 concurrent transactions locally to maintain operational continuity in the emergency department.",
+          "type": "requirement",
+          "level": 0,
+          "synthetic": true,
+          "children": [],
+          "logic": [
+            {
+              "type": "conditional",
+              "trigger": {
+                "event": "status_change",
+                "value": "network disconnection events or wide-area network outages"
+              },
+              "condition": "network disconnection events or wide-area network outages",
+              "action": {
+                "type": "outcome",
+                "description": "the system must seamlessly cache up to 100 concurrent transactions locally to maintain operational continuity in the emergency department"
+              },
+              "result": null,
+              "confidence": 0.85
+            }
+          ]
+        }
+      ],
+      "logic": [
+        {
+          "type": "conditional",
+          "trigger": {
+            "event": "status_change",
+            "value": "network disconnection events or wide-area network outages"
+          },
+          "condition": "network disconnection events or wide-area network outages",
+          "action": {
+            "type": "outcome",
+            "description": "the system must seamlessly cache up to 100 concurrent transactions locally to maintain operational continuity in the emergency department"
+          },
+          "result": null,
+          "confidence": 0.85
+        }
+      ],
+      "raw_text": "REQ-REL-06: During network disconnection events or wide-area network outages, the system must seamlessly cache up to 100 concurrent transactions locally to maintain operational continuity in the emergency department."
+    },
+    {
+      "id": "REQ-REL-07",
+      "type": "unknown",
+      "role": "System",
+      "goal": "REQ-REL-07: Patient clinical data and active treatment plans are moved to cold storage archiving 30 days after the formal discharge event to optimize primary database performance.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-REL-07: Patient clinical data and active treatment plans are moved to cold storage archiving 30 days after the formal discharge event to optimize primary database performance."
+    },
+    {
+      "id": "REQ-CON-01",
+      "type": "unknown",
+      "role": "System",
+      "goal": "architecture and data handling procedures must be entirely compliant with the Health Insurance Portability and Accountability Act (HIPAA)",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-CON-01: The system architecture and data handling procedures must be entirely compliant with the Health Insurance Portability and Accountability Act (HIPAA)."
+    },
+    {
+      "id": "REQ-CON-02",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The software must achieve Office of the National Coordinator for Health Information Technology (ONC) certification to ensure the hospital remains eligible for federal incentive programs",
+      "reason": null,
+      "confidence": 0.95,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-CON-02: The software must achieve Office of the National Coordinator for Health Information Technology (ONC) certification to ensure the hospital remains eligible for federal incentive programs."
+    },
+    {
+      "id": "REQ-CON-03",
+      "type": "unknown",
+      "role": "System",
+      "goal": "relating to substance abuse treatment must be strictly partitioned and adhere to 42 CFR Part 2 federal regulations, requiring explicit, additional patient consent for data sharing",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-CON-03: Any data relating to substance abuse treatment must be strictly partitioned and adhere to 42 CFR Part 2 federal regulations, requiring explicit, additional patient consent for data sharing."
+    },
+    {
+      "id": "REQ-CON-04",
+      "type": "unknown",
+      "role": "System",
+      "goal": "The system shall not rely on any proprietary, vendor-locked proprietary database technologies; standard open-source SQL engines must be utilized",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-CON-04: The system shall not rely on any proprietary, vendor-locked proprietary database technologies; standard open-source SQL engines must be utilized."
+    },
+    {
+      "id": "REQ-CON-05",
+      "type": "unknown",
+      "role": "System",
+      "goal": "licensing and cloud infrastructure deployment shall not exceed \\$2",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-CON-05: The initial capital expenditure for the system's software licensing and cloud infrastructure deployment shall not exceed \\$2.5 million for the first operational year."
+    },
+    {
+      "id": "REQ-CON-06",
+      "type": "unknown",
+      "role": "System",
+      "goal": "side web application must function reasonably well on machines with only 4GB of RAM",
+      "reason": null,
+      "confidence": 0.8,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-CON-06: Due to legacy hardware limitations in rural satellite clinics, the client-side web application must function reasonably well on machines with only 4GB of RAM."
+    },
+    {
+      "id": "REQ-CON-07",
+      "type": "unknown",
+      "role": "System",
+      "goal": "REQ-CON-07: Due to provider schedule volatility and historical no-show rates, the appointment scheduling module is restricted to a maximum 90-day rolling window for all future bookings.",
+      "reason": null,
+      "confidence": 0.6,
+      "acceptance_criteria": [],
+      "logic": [],
+      "raw_text": "REQ-CON-07: Due to provider schedule volatility and historical no-show rates, the appointment scheduling module is restricted to a maximum 90-day rolling window for all future bookings."
+    }
+  ],
+  "metadata": {
+    "total_stories": 116,
+    "source_file": "F:\\AMRITA ALL SEMESTER\\projects\\SRS Clarity\\backend\\data\\raw_SRS_processed\\stage3_cleaned_md\\4_MediCore_HMS_SRS_clean.md",
+    "extraction_method": "v2_format_agnostic"
+  }
+}

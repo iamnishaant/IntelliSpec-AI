@@ -1,0 +1,58 @@
+### 1. 🔴 5 Conflict Cases (MOST IMPORTANT)
+
+
+### 2. 🟡 5 Ambiguity Cases
+
+Requirement: FR-1: shall  provide secure login with username and password
+Flagged Term: (missing)
+Why flagged: No 'so that' clause — business justification is missing
+Confidence: 1.0 (Rule-based severity: low)
+----------------------------------------
+Requirement: FR-2: System shall enforce role-based access control (e.g., Admin, Employee).
+Flagged Term: e.g.
+Why flagged: Example given but exhaustive list may be needed
+Confidence: 1.0 (Rule-based severity: low)
+----------------------------------------
+Requirement: FR-2: shall  enforce role-based access control (e
+Flagged Term: (missing)
+Why flagged: No 'so that' clause — business justification is missing
+Confidence: 1.0 (Rule-based severity: low)
+----------------------------------------
+Requirement: FR-3: shall  create, modify, and delete user accounts
+Flagged Term: (missing)
+Why flagged: No 'so that' clause — business justification is missing
+Confidence: 1.0 (Rule-based severity: low)
+----------------------------------------
+Requirement: FR-4: shall  enforce password policies (min
+Flagged Term: (missing)
+Why flagged: No 'so that' clause — business justification is missing
+Confidence: 1.0 (Rule-based severity: low)
+----------------------------------------
+
+### 3. 🟠 3 Gap Cases
+
+Requirement: FR-7
+Gap Type: no_testable_ac
+Why flagged: FR-7 has 1 ACs but none contain testable conditions (If/When/Then)
+----------------------------------------
+Requirement: FR-10
+Gap Type: no_testable_ac
+Why flagged: FR-10 has 1 ACs but none contain testable conditions (If/When/Then)
+----------------------------------------
+Requirement: FR-12
+Gap Type: no_testable_ac
+Why flagged: FR-12 has 1 ACs but none contain testable conditions (If/When/Then)
+----------------------------------------
+
+### 4. ❗ 2 Cases YOU are unsure about
+
+Requirement: FR-1: shall  provide secure login with username and password
+Flagged Term: (missing) (Ambiguity)
+Why flagged: No 'so that' clause — business justification is missing
+Note: I don't know if this is correct because 'shall' is usually mandatory, but here it might be flagging a weak verb incorrectly if the pattern matched strangely, OR the term is just 'should' and the text uses it as an optional thing. Actually let's just show it.
+----------------------------------------
+Requirement: FR-7
+Gap Type: no_testable_ac
+Why flagged: FR-7 has 1 ACs but none contain testable conditions (If/When/Then)
+Note: I don't know if this is correct because it might be a valid informational requirement rather than an actionable gap.
+----------------------------------------
