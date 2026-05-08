@@ -1,7 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import DiagramCanvas from './DiagramCanvas';
 import Toolbox from './Toolbox';
+import NodePanel from './NodePanel';
 import { UploadCloud, Cpu, Send, Loader2, Download, Trash2, Edit3, XCircle, Image, FileJson, FileText } from 'lucide-react';
+
 
 import logbookSrs from '../srs_data/1_Logbook_User_Stories_intelligence.json';
 import bhavikaSrs from '../srs_data/2_SRS Doc_BHAVIKA GONDI_intelligence.json';
@@ -476,6 +478,104 @@ const Dashboard = () => {
     const [showInsights, setShowInsights] = useState(true);
     const canvasRef = useRef(null);
 
+    /* ── Human-in-the-Loop state ──────────────────────────────────────────── */
+    const [aiNodes, setAiNodes]               = useState([]);          // [{id,label,category}]
+    const [aiInstructions, setAiInstructions] = useState([]);         // [{id,text,from,to,label}]
+    const [placedNodeIds, setPlacedNodeIds]   = useState(new Set());  // IDs on canvas
+    const [connectedEdgeIds, setConnectedEdgeIds] = useState(new Set()); // edge IDs drawn
+    const positionStoreRef = useRef({});  // mirrors canvas positions
+
+    /* Offline SRS → nodes/instructions extractor (runs in < 100ms, no API) */
+    const extractNodesFromSrs = useCallback((srsData) => {
+        if (!srsData) return { nodes: [], instructions: [] };
+        const stories = srsData.user_stories || [];
+        const actors  = srsData.actors || [];
+        const nodeMap = {};
+
+        // Actors → nodes
+        actors.forEach((a, i) => {
+            const id = `actor-${i}`;
+            nodeMap[a] = id;
+            return { id, label: a, category: 'actor' };
+        });
+        const actorNodes = actors.map((a, i) => ({ id: `actor-${i}`, label: a, category: 'actor' }));
+        actors.forEach((a, i) => { nodeMap[a] = `actor-${i}`; });
+
+        // User stories → use_case nodes
+        const useCaseNodes = [];
+        stories.slice(0, 20).forEach((s, i) => {
+            const goal = s.goal || s.raw_text?.split('\n')[0] || `Story ${i+1}`;
+            const shortGoal = goal.length > 40 ? goal.substring(0, 40) + '…' : goal;
+            const id = `uc-${i}`;
+            useCaseNodes.push({ id, label: shortGoal, category: 'use_case' });
+            nodeMap[s.role] = nodeMap[s.role] || actorNodes.find(a => a.label === s.role)?.id;
+        });
+
+        // Instructions: actor → use_case
+        const instructions = stories.slice(0, 20).map((s, i) => {
+            const actorId = actorNodes.find(a => a.label === s.role)?.id || actorNodes[0]?.id;
+            const ucId    = `uc-${i}`;
+            return {
+                id:    `e-${i}`,
+                text:  `${s.role} → ${useCaseNodes[i]?.label}`,
+                from:  actorId,
+                to:    ucId,
+                label: 'initiates'
+            };
+        }).filter(e => e.from && e.to);
+
+        return { nodes: [...actorNodes, ...useCaseNodes], instructions };
+    }, []);
+
+    /* When SRS is selected, auto-populate the node panel */
+    React.useEffect(() => {
+        const srs = SRS_SAMPLES?.[selectedSrs];
+        if (srs) {
+            const extracted = extractNodesFromSrs(srs);
+            setAiNodes(extracted.nodes);
+            setAiInstructions(extracted.instructions);
+            setPlacedNodeIds(new Set());
+            setConnectedEdgeIds(new Set());
+            positionStoreRef.current = {};
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedSrs, extractNodesFromSrs]);
+
+    /* Position update from canvas */
+    const handlePositionUpdate = useCallback((positions) => {
+        positionStoreRef.current = positions;
+        setPlacedNodeIds(new Set(Object.keys(positions)));
+    }, []);
+
+    /* Instruction card clicked — draw the connection */
+    const handleConnectInstruction = useCallback((instr) => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ok = canvas.drawConnection(instr.from, instr.to, instr.label, instr.id);
+        if (ok) {
+            setConnectedEdgeIds(prev => {
+                const next = new Set(prev);
+                next.add(instr.id);
+                return next;
+            });
+        }
+    }, []);
+
+    /* Drop All — spawn all unplaced nodes in a column on the left */
+    const handleDropAll = useCallback(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        let y = 60;
+        aiNodes.forEach(node => {
+            if (!placedNodeIds.has(node.id)) {
+                canvas.spawnNode(node, 40, y);
+                y += 120;
+            }
+        });
+    }, [aiNodes, placedNodeIds]);
+
+
+
     const saveToHistory = (diagram, promptText, type) => {
         const newItem = {
             id: Date.now(),
@@ -658,7 +758,41 @@ const Dashboard = () => {
             {/* ── Toolbox ────────────────────────────────────────────────── */}
             <Toolbox onAddShape={handleAddShape} darkMode={isDark} />
 
-            {/* ── Main canvas area ──────────────────────────────────────── */}
+            {/* ── Node Panel (Col B + C) ─────────────────────────────────── */}
+            {aiNodes.length > 0 && (
+                <div style={{
+                    width: '340px', flexShrink: 0,
+                    borderRight: `1px solid ${T.border}`,
+                    background: T.surface,
+                    display: 'flex', flexDirection: 'column',
+                    overflow: 'hidden',
+                }}>
+                    <div style={{
+                        padding: '7px 12px',
+                        borderBottom: `1px solid ${T.border}`,
+                        fontSize: '11px', fontWeight: '800',
+                        color: T.textSubtle,
+                        background: T.surface,
+                        letterSpacing: '0.06em', textTransform: 'uppercase'
+                    }}>
+                        🧠 AI Workspace — drag nodes, click connections
+                    </div>
+                    <div style={{ flex: 1, overflow: 'hidden' }}>
+                        <NodePanel
+                            nodes={aiNodes}
+                            instructions={aiInstructions}
+                            placedNodeIds={placedNodeIds}
+                            connectedEdgeIds={connectedEdgeIds}
+                            onConnectInstruction={handleConnectInstruction}
+                            onDropAll={handleDropAll}
+                            isDark={isDark}
+                            T={T}
+                        />
+                    </div>
+                </div>
+            )}
+
+
             <main style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
 
                 {/* ── Toolbar header ────────────────────────────────────── */}
@@ -761,7 +895,9 @@ const Dashboard = () => {
                         snapGrid={snapGrid}
                         onZoomChange={setZoom}
                         onSelectionChange={handleSelectionChange}
+                        onPositionUpdate={handlePositionUpdate}
                     />
+
 
                     {/* ── History Sidebar ── */}
                     {showHistory && (

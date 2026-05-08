@@ -11,7 +11,7 @@
  *  - Connect handles, Remove button, double-click label edit, keyboard delete
  */
 
-import React, { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
+import React, { useEffect, useRef, useImperativeHandle, forwardRef, useCallback } from 'react';
 import * as joint from 'jointjs';
 import 'jointjs/dist/joint.css';
 import { SHAPE_MAP, DEFAULT_SIZES } from '../joint-logic/customShapes';
@@ -206,7 +206,7 @@ const makeLinkTools = () =>
 /* ═══════════════════════════════════════════════════════════════════════════
    DiagramCanvas component
 ═══════════════════════════════════════════════════════════════════════════ */
-const DiagramCanvas = forwardRef(function DiagramCanvas({ data, darkMode, snapGrid, onZoomChange, onSelectionChange }, ref) {
+const DiagramCanvas = forwardRef(function DiagramCanvas({ data, darkMode, snapGrid, onZoomChange, onSelectionChange, onPositionUpdate }, ref) {
     const wrapperRef  = useRef(null);
     const paperRef    = useRef(null);
     const graphRef    = useRef(null);
@@ -682,8 +682,33 @@ const DiagramCanvas = forwardRef(function DiagramCanvas({ data, darkMode, snapGr
     }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
     /* ── 5. Expose imperative API to Dashboard ───────────────────────────── */
+
+    // Real-time position store — keyed by cell.id
+    var positionStore = useRef({});
+
+    // Broadcast position changes to Dashboard
+    React.useEffect(function() {
+        var graph = graphRef.current;
+        if (!graph) return;
+        var handler = function(cell) {
+            if (cell.isLink && cell.isLink()) return;
+            var pos = cell.position();
+            var size = cell.size();
+            positionStore.current[cell.id] = {
+                x: pos.x, y: pos.y,
+                cx: pos.x + size.width / 2,
+                cy: pos.y + size.height / 2,
+                w: size.width, h: size.height
+            };
+            if (onPositionUpdate) onPositionUpdate({ ...positionStore.current });
+        };
+        graph.on('change:position', handler);
+        return function() { graph.off('change:position', handler); };
+    }); // runs every render so ref stays fresh
+
     useImperativeHandle(ref, function() {
         return {
+
             addShape: function(type) {
                 var graph = graphRef.current;
                 var paper = paperRef.current;
@@ -869,14 +894,128 @@ const DiagramCanvas = forwardRef(function DiagramCanvas({ data, darkMode, snapGr
                 if (!g) return;
                 g.clear();
                 selectedRef.current = null;
+                positionStore.current = {};
                 if (onSelectionChange) onSelectionChange(null);
+                if (onPositionUpdate) onPositionUpdate({});
+            },
+
+            /* ── Human-in-the-Loop: draw a bendable bezier connection ── */
+            drawConnection: function(fromId, toId, label, edgeId) {
+                var graph = graphRef.current;
+                if (!graph) return false;
+                var fromCell = graph.getCell(fromId);
+                var toCell   = graph.getCell(toId);
+                if (!fromCell || !toCell) return false;
+                // Don't duplicate
+                var existing = graph.getLinks().find(function(l) {
+                    return (l.get('source').id === fromId && l.get('target').id === toId) ||
+                           (l.id === edgeId);
+                });
+                if (existing) return true;
+                var link = new joint.shapes.standard.Link({
+                    id: edgeId || ('e-' + fromId + '-' + toId),
+                    source: { id: fromId },
+                    target: { id: toId },
+                    connector: { name: 'smooth' },
+                    attrs: {
+                        line: {
+                            stroke: '#6366f1',
+                            strokeWidth: 2,
+                            targetMarker: { type: 'arrow', size: 8 }
+                        }
+                    },
+                    labels: label ? [{
+                        attrs: {
+                            text: { text: label, fontSize: 10, fill: '#6366f1', fontWeight: '600' },
+                            rect: { fill: 'white', stroke: '#e0e7ff', rx: 4, ry: 4, refWidth: '110%', refHeight: '130%', refX: '-5%', refY: '-15%' }
+                        },
+                        position: 0.5
+                    }] : []
+                });
+                graph.addCell(link);
+                return true;
+            },
+
+            /* ── Human-in-the-Loop: spawn a node chip from the panel ── */
+            spawnNode: function(nodeData, x, y) {
+                var graph = graphRef.current;
+                if (!graph) return;
+                // Check if already on canvas
+                if (graph.getCell(nodeData.id)) return;
+                var cellDef = {
+                    id: nodeData.id,
+                    type: nodeData.jointType || 'standard.Rectangle',
+                    position: { x: x || 100, y: y || 100 },
+                    size: DEFAULT_SIZES[nodeData.jointType] || { width: 160, height: 60 },
+                    attrs: { label: { text: nodeData.label } }
+                };
+                var el = buildElement(cellDef);
+                applyTheme(el, darkMode);
+                graph.addCell(el);
+                // Register initial position
+                var pos = el.position();
+                var size = el.size();
+                positionStore.current[el.id] = {
+                    x: pos.x, y: pos.y,
+                    cx: pos.x + size.width / 2,
+                    cy: pos.y + size.height / 2,
+                    w: size.width, h: size.height
+                };
+                if (onPositionUpdate) onPositionUpdate({ ...positionStore.current });
+            },
+
+            /* Get current placed IDs */
+            getPlacedIds: function() {
+                return new Set(Object.keys(positionStore.current));
             },
         };
     });
 
+
     return (
         <div
             ref={wrapperRef}
+            onDragOver={e => e.preventDefault()}
+            onDrop={e => {
+                e.preventDefault();
+                var raw = e.dataTransfer.getData('application/intellispec-node');
+                if (!raw) return;
+                try {
+                    var nodeData = JSON.parse(raw);
+                    var paper = paperRef.current;
+                    var wrapper = wrapperRef.current;
+                    var x = 100, y = 100;
+                    if (paper && wrapper) {
+                        var rect = wrapper.getBoundingClientRect();
+                        var t = paper.translate();
+                        var sc = paper.scale().sx;
+                        x = (e.clientX - rect.left - t.tx) / sc - 80;
+                        y = (e.clientY - rect.top  - t.ty) / sc - 40;
+                    }
+                    // Call spawnNode via the internal ref pattern
+                    var graph = graphRef.current;
+                    if (graph && !graph.getCell(nodeData.id)) {
+                        var cellDef = {
+                            id: nodeData.id,
+                            type: nodeData.jointType || 'standard.Rectangle',
+                            position: { x: Math.max(10, x), y: Math.max(10, y) },
+                            size: DEFAULT_SIZES[nodeData.jointType] || { width: 160, height: 60 },
+                            attrs: { label: { text: nodeData.label } }
+                        };
+                        var el = buildElement(cellDef);
+                        applyTheme(el, darkMode);
+                        graph.addCell(el);
+                        var pos = el.position();
+                        var sz  = el.size();
+                        positionStore.current[el.id] = {
+                            x: pos.x, y: pos.y,
+                            cx: pos.x + sz.width / 2, cy: pos.y + sz.height / 2,
+                            w: sz.width, h: sz.height
+                        };
+                        if (onPositionUpdate) onPositionUpdate({ ...positionStore.current });
+                    }
+                } catch(err) { console.warn('Drop parse error:', err); }
+            }}
             style={{
                 position:   'absolute',
                 inset:      0,
