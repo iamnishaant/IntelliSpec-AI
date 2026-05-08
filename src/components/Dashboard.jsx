@@ -217,8 +217,8 @@ const buildPrompt = (req, srsContext = '') => {
 const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY || '';
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
 
-const GROQ_MODELS = ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant'];
-const GEMINI_MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-lite'];
+const GROQ_MODELS = ['llama-3.1-405b-reasoning', 'llama-3.3-70b-versatile', 'llama-3.1-8b-instant'];
+const GEMINI_MODELS = ['gemini-2.5-pro', 'gemini-2.0-flash', 'gemini-2.0-flash-lite'];
 
 /** Call Groq (OpenAI-compatible). */
 const callGroq = async (prompt) => {
