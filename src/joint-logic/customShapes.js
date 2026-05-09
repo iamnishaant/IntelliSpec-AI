@@ -85,32 +85,35 @@ const UmlSystemBoundary = joint.shapes.standard.Rectangle.define('uml.SystemBoun
 ═══════════════════════════════════════════════════════════════════════════ */
 
 /* uml.StartNode — solid filled black circle */
-const UmlStartNode = joint.shapes.standard.Circle.define('uml.StartNode', {
-    size: { width: 30, height: 30 },
-    attrs: {
-        body:  { fill: '#111827', stroke: '#111827', strokeWidth: 2, magnet: 'true' },
-        label: { text: '', display: 'none' },
+const UmlStartNode = joint.dia.Element.define(
+    'uml.StartNode',
+    {
+        size: { width: 30, height: 30 },
+        attrs: {
+            body:  { refWidth: '100%', refHeight: '100%', fill: '#111827', stroke: '#111827', strokeWidth: 2, magnet: 'true' },
+            label: { display: 'none' },
+        },
     },
-});
+    { markup: [{ tagName: 'circle', selector: 'body' }] }
+);
 
-/* uml.EndState — outer ring + inner filled circle */
+/**
+ * uml.EndState — Outlined circle with inner dot
+ */
 const UmlEndState = joint.dia.Element.define(
     'uml.EndState',
     {
         size: { width: 36, height: 36 },
         attrs: {
-            hitArea: { refWidth: '100%', refHeight: '100%', fill: 'transparent', stroke: 'none', magnet: 'true' },
-            outer:   { cx: 18, cy: 18, r: 17, fill: 'white', stroke: '#111827', strokeWidth: 2 },
-            inner:   { cx: 18, cy: 18, r: 10, fill: '#111827' },
-            label:   { text: '', display: 'none' },
+            body:  { refWidth: '100%', refHeight: '100%', fill: '#ffffff', stroke: '#111827', strokeWidth: 2, magnet: 'true' },
+            inner: { refX: '50%', refY: '50%', r: 10, fill: '#111827', stroke: 'none' },
+            label: { display: 'none' },
         },
     },
     {
         markup: [
-            { tagName: 'rect',   selector: 'hitArea' },
-            { tagName: 'circle', selector: 'outer'   },
-            { tagName: 'circle', selector: 'inner'   },
-            { tagName: 'text',   selector: 'label'   },
+            { tagName: 'circle', selector: 'body'  },
+            { tagName: 'circle', selector: 'inner' },
         ],
     }
 );
@@ -187,6 +190,88 @@ const DfdExternalEntity = joint.shapes.standard.Rectangle.define('dfd.ExternalEn
 });
 
 /* ═══════════════════════════════════════════════════════════════════════════
+   PHASE 3 — ANNOTATION & MATH CONSTRAINT SHAPES
+   These shapes render math guard conditions and figure references
+   extracted from the _clean.md via the Phase 2 Prompt Engine.
+═══════════════════════════════════════════════════════════════════════════ */
+
+/**
+ * uml.Note — "Dog-eared" note shape (sticky note appearance)
+ * Used to annotate math guard conditions extracted from the SRS.
+ * e.g. "Guard: attendance < 75%"
+ */
+const UmlNote = joint.dia.Element.define(
+    'uml.Note',
+    {
+        size: { width: 180, height: 70 },
+        attrs: {
+            body: {
+                refPoints: '0 0 170 0 180 10 180 70 0 70',
+                fill: '#fefce8', stroke: '#ca8a04', strokeWidth: 1.5, magnet: 'passive',
+            },
+            dogear: {
+                refPoints: '170 0 170 10 180 10',
+                fill: '#fef08a', stroke: '#ca8a04', strokeWidth: 1.5,
+            },
+            label: {
+                refX: '50%', refY: '50%',
+                textAnchor: 'middle', textVerticalAnchor: 'middle',
+                fontSize: 11, fill: '#713f12',
+                fontFamily: 'Inter, sans-serif',
+                text: 'Note',
+            },
+        },
+    },
+    {
+        markup: [
+            { tagName: 'polygon', selector: 'body'   },
+            { tagName: 'polygon', selector: 'dogear' },
+            { tagName: 'text',    selector: 'label'  },
+        ],
+    }
+);
+
+/**
+ * uml.Constraint — Rounded constraint label for guard conditions on transitions.
+ * Lighter weight than a Note; appears inline near decision points.
+ * e.g. "[response_time < 5s]"
+ */
+const UmlConstraint = joint.shapes.standard.Rectangle.define('uml.Constraint', {
+    size: { width: 180, height: 36 },
+    attrs: {
+        body:  {
+            rx: 18, ry: 18,
+            fill: '#eff6ff', stroke: '#2563eb', strokeWidth: 1.5,
+            strokeDasharray: '5 3', magnet: 'passive',
+        },
+        label: {
+            text: '[constraint]', fill: '#1e3a5f', fontSize: 11,
+            fontStyle: 'italic', fontFamily: 'Inter, sans-serif',
+        },
+    },
+});
+
+/**
+ * standard.TextBlock — Plain flat annotation for Figure references.
+ * e.g. "[See Figure 3.1]"
+ * Rendered as a dashed-border transparent rectangle with italicized text.
+ */
+const TextBlockAnnotation = joint.shapes.standard.Rectangle.define('standard.TextBlock', {
+    size: { width: 200, height: 40 },
+    attrs: {
+        body:  {
+            fill: 'transparent', stroke: '#94a3b8',
+            strokeWidth: 1, strokeDasharray: '4 3', rx: 4, ry: 4,
+        },
+        label: {
+            text: '[See Figure X]', fill: '#64748b', fontSize: 11,
+            fontStyle: 'italic', fontFamily: 'Inter, sans-serif',
+        },
+    },
+});
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
    SHAPE_MAP  —  used by DiagramCanvas to instantiate shapes by type string.
    This is the single source of truth; avoids all joint.shapes.uml.* access.
 ═══════════════════════════════════════════════════════════════════════════ */
@@ -201,6 +286,10 @@ export const SHAPE_MAP = {
     'dfd.Process':        DfdProcess,
     'dfd.DataStore':      DfdDataStore,
     'dfd.ExternalEntity': DfdExternalEntity,
+    // Phase 3 — Annotation & Math shapes
+    'uml.Note':           UmlNote,
+    'uml.Constraint':     UmlConstraint,
+    'standard.TextBlock': TextBlockAnnotation,
 };
 
 /* Default sizes per type, used when AI doesn't specify size */
@@ -216,7 +305,11 @@ export const DEFAULT_SIZES = {
     'dfd.DataStore':      { width: 160, height: 50  },
     'dfd.ExternalEntity': { width: 120, height: 60  },
     'standard.Rectangle': { width: 160, height: 60  },
+    // Phase 3
+    'uml.Note':           { width: 180, height: 70  },
+    'uml.Constraint':     { width: 180, height: 36  },
+    'standard.TextBlock': { width: 200, height: 40  },
 };
 
 /* Backwards-compat: App.jsx calls initShapes() in useEffect */
-export const initShapes = () => { /* no-op — shapes registered at import time */ };
+export const initShapes = () => { /* no-op — shapes registered at import time */ };

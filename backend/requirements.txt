@@ -1,22 +1,5 @@
-# Core API & Server
 fastapi
 uvicorn[standard]
+pymupdf
+pdfplumber
 python-multipart
-pydantic
-python-dotenv
-
-# PDF Processing & Vision (SOTA Extraction)
-pymupdf>=1.24.0
-marker-pdf
-torch>=2.0.0
-
-# Semantic Intelligence & Reasoning
-sentence-transformers
-faiss-cpu
-scikit-learn
-numpy>=1.24.0
-sympy>=1.12
-
-# Utilities
-rich
-requests

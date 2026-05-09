@@ -10,6 +10,9 @@ import bhavikaSrs from '../srs_data/2_SRS Doc_BHAVIKA GONDI_intelligence.json';
 import sreeramSrs from '../srs_data/3_SRS_Grp6_SREERAM R_intelligence.json';
 import medicoreSrs from '../srs_data/4_MediCore_HMS_SRS_intelligence.json';
 import seGrpSrs from '../srs_data/5_SE_grp__intelligence.json';
+import { generateDiagram } from '../joint-logic/promptEngine.js';
+import { extractGraphWithGroq, getJointShapeForCategory, parseDocumentViaBackend } from '../joint-logic/pureFrontendEngine.js';
+
 
 /* ═══════════════════════════════════════════════════════════════════════════
    JSON helpers
@@ -347,11 +350,15 @@ const Dashboard = () => {
     const [isDark, setIsDark]           = useState(false);
     const [snapGrid, setSnapGrid]       = useState(true);
     const [zoom, setZoom]               = useState(100);
+    const [generationProgress, setGenerationProgress] = useState(''); // Phase-by-phase status
+
 
     const [selectedSrs, setSelectedSrs] = useState('None');
     const [customSrs, setCustomSrs]     = useState(null);
     const [liveDocs, setLiveDocs]       = useState([]);
     const [parsingStatus, setParsingStatus] = useState(null);
+    const [activeDocId, setActiveDocId]     = useState(null);
+    const [rawDocumentText, setRawDocumentText] = useState(''); // raw text from parsed doc
     const fileInputRef                  = useRef(null);
 
     const SRS_SAMPLES = {
@@ -366,6 +373,22 @@ const Dashboard = () => {
 
     React.useEffect(() => {
         fetchLiveDocs();
+        
+        // Restore canvas state from local storage on boot
+        setTimeout(() => {
+            if (canvasRef.current && canvasRef.current.loadGraph) {
+                try {
+                    const savedState = localStorage.getItem('uml_canvas_state');
+                    if (savedState) {
+                        const parsed = JSON.parse(savedState);
+                        canvasRef.current.loadGraph(parsed);
+                        console.log('[Dashboard] Restored canvas from localStorage');
+                    }
+                } catch(e) {
+                    console.error('Failed to restore canvas state', e);
+                }
+            }
+        }, 500); // Wait for canvas to mount
     }, []);
 
     const fetchLiveDocs = async () => {
@@ -381,11 +404,14 @@ const Dashboard = () => {
     };
 
     const pollParsingStatus = (docId) => {
+        let failCount = 0;
+        const MAX_FAILS = 5;
         const interval = setInterval(async () => {
             try {
                 const resp = await fetch(`http://127.0.0.1:8000/api/document/${docId}/status`);
-                if (!resp.ok) throw new Error('Status request failed');
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
                 const data = await resp.json();
+                failCount = 0; // reset on success
 
                 if (data.status === 'processing') {
                     setParsingStatus(`Parsing: ${data.stage || 'Analyzing'} (${data.percent || 0}%)`);
@@ -396,6 +422,7 @@ const Dashboard = () => {
                     if (intelResp.ok) {
                         const intelData = await intelResp.json();
                         setCustomSrs(intelData);
+                        setActiveDocId(docId);
                         setSelectedSrs('Custom SRS');
                         setParsingStatus(null);
                         setLoading(false);
@@ -408,10 +435,15 @@ const Dashboard = () => {
                     setError('SRS Clarity pipeline error: ' + data.message);
                 }
             } catch (err) {
-                clearInterval(interval);
-                setParsingStatus(null);
-                setLoading(false);
-                setError('Polling backend failed.');
+                failCount++;
+                if (failCount >= MAX_FAILS) {
+                    clearInterval(interval);
+                    setParsingStatus(null);
+                    setLoading(false);
+                    setError('Cannot reach the backend (port 8000). Make sure the SRS-Clarity server is running.');
+                } else {
+                    setParsingStatus(`Retrying connection... (${failCount}/${MAX_FAILS})`);
+                }
             }
         }, 2500);
     };
@@ -420,9 +452,13 @@ const Dashboard = () => {
         const file = e.target.files[0];
         if (!file) return;
 
-        if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+        const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+        const isMdOrTxt = file.name.toLowerCase().endsWith('.md') || file.name.toLowerCase().endsWith('.txt');
+        const isJson = file.name.toLowerCase().endsWith('.json');
+
+        if (isPdf) {
             setLoading(true);
-            setParsingStatus('Uploading PDF file...');
+            setParsingStatus('Uploading PDF document...');
             try {
                 const formData = new FormData();
                 formData.append('file', file);
@@ -431,7 +467,7 @@ const Dashboard = () => {
                     method: 'POST',
                     body: formData
                 });
-                if (!resp.ok) throw new Error('Upload failed');
+                if (!resp.ok) throw new Error('PDF Upload failed');
 
                 const data = await resp.json();
                 pollParsingStatus(data.doc_id);
@@ -440,28 +476,48 @@ const Dashboard = () => {
                 setParsingStatus(null);
                 setError('Error initializing pipeline: ' + err.message);
             }
-        } else {
+        } else if (isMdOrTxt) {
+            setLoading(true);
+            setParsingStatus('Uploading Markdown document...');
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const resp = await fetch('http://127.0.0.1:8000/api/upload-readme', {
+                    method: 'POST',
+                    body: formData
+                });
+                if (!resp.ok) throw new Error('Markdown Upload failed');
+
+                const data = await resp.json();
+                
+                // For markdown, we can skip polling the long pipeline and just set the doc ID
+                setActiveDocId(data.doc_id);
+                setCustomSrs({ actors: ['System'], user_stories: [] });
+                setSelectedSrs('Custom SRS');
+                setParsingStatus(null);
+                setLoading(false);
+                setDebugInfo(`✅ Markdown document loaded successfully. Ready for semantic extraction.`);
+                fetchLiveDocs();
+            } catch (err) {
+                setLoading(false);
+                setParsingStatus(null);
+                setError('Error processing Markdown: ' + err.message);
+            }
+        } else if (isJson) {
             const reader = new FileReader();
             reader.onload = (evt) => {
                 try {
-                    if (file.name.endsWith('.json')) {
-                        const parsed = JSON.parse(evt.target.result);
-                        if (parsed.user_stories && parsed.actors) {
-                            setCustomSrs(parsed);
-                            setSelectedSrs('Custom SRS');
-                            setDebugInfo('Custom context mapped successfully.');
-                        } else {
-                            setError('Malformed payload.');
-                        }
-                    } else {
-                        setCustomSrs({
-                            actors: ['System'],
-                            user_stories: [{ goal: evt.target.result.substring(0, 1200), role: 'System', raw_text: evt.target.result }]
-                        });
+                    const parsed = JSON.parse(evt.target.result);
+                    if (parsed.user_stories && parsed.actors) {
+                        setCustomSrs(parsed);
                         setSelectedSrs('Custom SRS');
+                        setDebugInfo('Custom context mapped successfully.');
+                    } else {
+                        setError('Malformed payload.');
                     }
                 } catch(err) {
-                    setError('Error processing text document.');
+                    setError('Error processing JSON document.');
                 }
             };
             reader.readAsText(file);
@@ -476,11 +532,20 @@ const Dashboard = () => {
     const [reasoningSteps, setReasoningSteps] = useState([]);
     const [showHistory, setShowHistory] = useState(false);
     const [showInsights, setShowInsights] = useState(true);
+    // Chunk Inspector panel state
+    const [activeInsightTab, setActiveInsightTab] = useState('SRS Audit');
+    const [chunkPreview, setChunkPreview]         = useState(null);
+    const [rawSrsPreview, setRawSrsPreview]       = useState(null);
     const canvasRef = useRef(null);
 
+
     /* ── Human-in-the-Loop state ──────────────────────────────────────────── */
-    const [aiNodes, setAiNodes]               = useState([]);          // [{id,label,category}]
-    const [aiInstructions, setAiInstructions] = useState([]);         // [{id,text,from,to,label}]
+    const [aiNodes, setAiNodes]               = useState(() => {
+        try { const saved = localStorage.getItem('uml_hiloop_nodes'); return saved ? JSON.parse(saved) : []; } catch(e) { return []; }
+    });
+    const [aiInstructions, setAiInstructions] = useState(() => {
+        try { const saved = localStorage.getItem('uml_hiloop_instr'); return saved ? JSON.parse(saved) : []; } catch(e) { return []; }
+    });
     const [placedNodeIds, setPlacedNodeIds]   = useState(new Set());  // IDs on canvas
     const [connectedEdgeIds, setConnectedEdgeIds] = useState(new Set()); // edge IDs drawn
     const positionStoreRef = useRef({});  // mirrors canvas positions
@@ -492,40 +557,57 @@ const Dashboard = () => {
         const actors  = srsData.actors || [];
         const nodeMap = {};
 
-        // Actors → nodes
-        actors.forEach((a, i) => {
-            const id = `actor-${i}`;
-            nodeMap[a] = id;
-            return { id, label: a, category: 'actor' };
-        });
-        const actorNodes = actors.map((a, i) => ({ id: `actor-${i}`, label: a, category: 'actor' }));
+        // 1. Actors → nodes (Semantic Entities)
+        const actorNodes = actors.map((a, i) => ({ 
+            id: `actor-${i}`, 
+            label: a.split(' ')[0], // Just the primary name
+            fullDescription: `Role: ${a}`, 
+            category: 'actor' 
+        }));
         actors.forEach((a, i) => { nodeMap[a] = `actor-${i}`; });
 
-        // User stories → use_case nodes
+        // 2. User Stories → Use Case / Process Nodes
         const useCaseNodes = [];
-        stories.slice(0, 20).forEach((s, i) => {
-            const goal = s.goal || s.raw_text?.split('\n')[0] || `Story ${i+1}`;
-            const shortGoal = goal.length > 40 ? goal.substring(0, 40) + '…' : goal;
+        stories.slice(0, 25).forEach((s, i) => {
+            let raw = (s.goal || s.raw_text || '').replace(/^[\s\-\*\d\.)]+/, '').trim();
+            
+            // Generate Semantic Label (Entity-based)
+            // Strategy: Take first 3-4 words, remove "The user should be able to" etc.
+            let semantic = raw
+                .replace(/^(the|a|an|system|user) (should be able to|can|must|will)/i, '')
+                .trim()
+                .split(/[,.;]/)[0] // split at punctuation
+                .split(' ')
+                .slice(0, 4)
+                .join(' ');
+            
+            if (semantic.length < 3) semantic = raw.split(' ').slice(0, 3).join(' ');
+
             const id = `uc-${i}`;
-            useCaseNodes.push({ id, label: shortGoal, category: 'use_case' });
-            nodeMap[s.role] = nodeMap[s.role] || actorNodes.find(a => a.label === s.role)?.id;
+            useCaseNodes.push({ 
+                id, 
+                label: semantic, 
+                fullDescription: raw, 
+                category: raw.toLowerCase().includes('database') || raw.toLowerCase().includes('system') ? 'process' : 'use_case'
+            });
         });
 
-        // Instructions: actor → use_case
-        const instructions = stories.slice(0, 20).map((s, i) => {
-            const actorId = actorNodes.find(a => a.label === s.role)?.id || actorNodes[0]?.id;
-            const ucId    = `uc-${i}`;
+        // 3. Instructions: actor → node (Semantic Progress)
+        const instructions = stories.slice(0, 25).map((s, i) => {
+            const actorId = actorNodes.find(a => s.role && a.fullDescription.includes(s.role))?.id || actorNodes[0]?.id;
+            const targetId = `uc-${i}`;
             return {
-                id:    `e-${i}`,
-                text:  `${s.role} → ${useCaseNodes[i]?.label}`,
+                id:    `instr-${i}`,
+                text:  `${actorNodes.find(a => a.id === actorId)?.label || 'User'} ➜ ${useCaseNodes[i]?.label}`,
                 from:  actorId,
-                to:    ucId,
-                label: 'initiates'
+                to:    targetId,
+                label: 'performs'
             };
         }).filter(e => e.from && e.to);
 
         return { nodes: [...actorNodes, ...useCaseNodes], instructions };
     }, []);
+
 
     /* When SRS is selected, auto-populate the node panel */
     React.useEffect(() => {
@@ -545,6 +627,13 @@ const Dashboard = () => {
     const handlePositionUpdate = useCallback((positions) => {
         positionStoreRef.current = positions;
         setPlacedNodeIds(new Set(Object.keys(positions)));
+        
+        // Phase 3: State Persistence
+        // Automatically save the canvas graph state whenever positions change
+        if (canvasRef.current && canvasRef.current.getGraphJSON) {
+            const graphJSON = canvasRef.current.getGraphJSON();
+            localStorage.setItem('uml_canvas_state', JSON.stringify(graphJSON));
+        }
     }, []);
 
     /* Instruction card clicked — draw the connection */
@@ -574,6 +663,39 @@ const Dashboard = () => {
         });
     }, [aiNodes, placedNodeIds]);
 
+    /* ── Panel Resizing (Global) ─────────────────────────────────────────── */
+    const [panelWidth, setPanelWidth] = useState(380);
+    const [isResizingPanel, setIsResizingPanel] = useState(false);
+
+    const startResizingPanel = useCallback(() => setIsResizingPanel(true), []);
+    const stopResizingPanel  = useCallback(() => setIsResizingPanel(false), []);
+
+    const resizePanel = useCallback((e) => {
+        if (isResizingPanel) {
+            // 40px is approximately the Toolbox width
+            const newWidth = e.clientX - 45;
+            if (newWidth > 200 && newWidth < 1000) {
+                setPanelWidth(newWidth);
+            }
+        }
+    }, [isResizingPanel]);
+
+    React.useEffect(() => {
+        window.addEventListener('mousemove', resizePanel);
+        window.addEventListener('mouseup', stopResizingPanel);
+        return () => {
+            window.removeEventListener('mousemove', resizePanel);
+            window.removeEventListener('mouseup', stopResizingPanel);
+        };
+    }, [resizePanel, stopResizingPanel]);
+
+    /* ── Hover / Detail Tracking ───────────────────────────────────────── */
+    const [hoveredNodeInfo, setHoveredNodeInfo] = useState(null); // {id, desc}
+    const handleHoverNode = useCallback((id, desc) => {
+        setHoveredNodeInfo(id ? { id, desc } : null);
+    }, []);
+
+
 
 
     const saveToHistory = (diagram, promptText, type) => {
@@ -587,6 +709,92 @@ const Dashboard = () => {
         const updated = [newItem, ...history].slice(0, 10);
         setHistory(updated);
         localStorage.setItem('uml_history', JSON.stringify(updated));
+    };
+
+    /* ── AI generate (Multi-Pass Prompt Engine) ─────────────────────────── */
+    const handleGenerate = async () => {
+        if (!prompt.trim()) { setError('Please enter a requirement first.'); return; }
+
+        setLoading(true);
+        setError(null);
+        setDebugInfo(null);
+        setReasoningSteps([]);
+        setGenerationProgress('');
+
+        // Determine the active doc_id for chunk retrieval
+        // Live docs are matched by document_name; samples use a fixed prefix map
+        const DOC_ID_MAP = {
+            'Logbook Stories':  '1_Logbook_User_Stories',
+            'Bhavika Gondi SRS': '2_SRS Doc_BHAVIKA GONDI',
+            'Sreeram R SRS':    '3_SRS_Grp6_SREERAM R',
+            'MediCore HMS':     '4_MediCore_HMS_SRS',
+            'SE Group SRS':     '5_SE_grp_',
+        };
+        const docIdForChunks = DOC_ID_MAP[selectedSrs] || null;
+        const activeIntelligence = SRS_SAMPLES[selectedSrs] || null;
+
+        const steps = [
+            '🔍 Classifying diagram type...',
+            '📦 Retrieving relevant SRS chunks...',
+            '🧠 Injecting context into LLM prompt...',
+            '✍️  Generating semantic entities & connections...',
+            '✅ Validating JointJS schema...',
+        ];
+
+        let currentStep = 0;
+        const stepInterval = setInterval(() => {
+            if (currentStep < steps.length) {
+                setReasoningSteps(prev => [...prev, steps[currentStep]]);
+                currentStep++;
+            } else {
+                clearInterval(stepInterval);
+            }
+        }, 700);
+
+        try {
+            // Prefer parsed raw document text; fallback to intelligence JSON as string
+            const activeIntelText = rawDocumentText ||
+                (activeIntelligence?.user_stories?.[0]?.raw_text) ||
+                (activeIntelligence ? JSON.stringify(activeIntelligence) : '');
+
+            const graph = await generateDiagram(prompt, activeDocId || docIdForChunks, activeIntelligence || { raw_text: activeIntelText }, (msg) => {
+                if (msg) setGenerationProgress(msg);
+            });
+
+            // Populate Human-in-the-Loop state instead of auto-rendering cells
+            if (graph.entities && graph.entities.length > 0) {
+                // Ensure instructions have text for the UI cards
+                const processedInstr = (graph.connections || []).map(instr => ({
+                    ...instr,
+                    text: instr.text || `${graph.entities.find(e => e.id === instr.from)?.label || 'Node'} ➜ ${instr.label} ➜ ${graph.entities.find(e => e.id === instr.to)?.label || 'Node'}`
+                }));
+
+                setAiNodes(graph.entities);
+                setAiInstructions(processedInstr);
+                
+                // Clear existing canvas state for a fresh semantic session
+                setPlacedNodeIds(new Set());
+                setConnectedEdgeIds(new Set());
+                
+                // Save JSON state to local storage
+                localStorage.setItem('uml_hiloop_nodes', JSON.stringify(mappedNodes));
+                localStorage.setItem('uml_hiloop_instr', JSON.stringify(processedInstr));
+                
+                setReasoningSteps(prev => [...prev, `✓ Extracted ${mappedNodes.length} semantic entities.`]);
+            } else {
+                throw new Error("No semantic entities could be extracted from the requirements.");
+            }
+
+            setActiveProvider('Groq (Semantic Engine)');
+            setGenerationProgress('');
+
+        } catch (err) {
+            setError(err.message);
+            clearInterval(stepInterval);
+            setGenerationProgress('');
+        } finally {
+            setTimeout(() => setLoading(false), 800);
+        }
     };
 
     /* ── Theme tokens ────────────────────────────────────────────────────── */
@@ -628,67 +836,6 @@ const Dashboard = () => {
         okBg:        '#f0fdf4',
         okBorder:    '#bbf7d0',
         okText:      '#15803d',
-    };
-
-    /* ── AI generate ────────────────────────────────────────────────────── */
-    const handleGenerate = async () => {
-        if (!prompt.trim()) { setError('Please enter a requirement first.'); return; }
-
-        setLoading(true);
-        setError(null);
-        setDebugInfo(null);
-        setReasoningSteps([]);
-
-        const steps = [
-            "Parsing natural language requirements...",
-            "Identifying primary actors and entities...",
-            "Mapping relationships and data flows...",
-            "Optimizing spatial layout coordinates...",
-            "Validating JointJS schema integrity..."
-        ];
-
-        // Simulate reasoning steps for UX
-        let currentStep = 0;
-        const stepInterval = setInterval(() => {
-            if (currentStep < steps.length) {
-                setReasoningSteps(prev => [...prev, steps[currentStep]]);
-                currentStep++;
-            } else {
-                clearInterval(stepInterval);
-            }
-        }, 600);
-
-        const diagType = detectDiagramType(prompt);
-
-        try {
-            let srsContext = '';
-            if (selectedSrs && selectedSrs !== 'None') {
-                const data = SRS_SAMPLES[selectedSrs];
-                if (data) {
-                    const stories = data.user_stories || [];
-                    const actors = data.actors || [];
-                    srsContext = `USE THIS REQUIREMENT CONTEXT:\n` +
-                                 `Relevant Actors: ${actors.join(', ')}\n` +
-                                 `Stories: ` + stories.map(s => s.goal || s.raw_text).slice(0, 10).join(', ');
-                }
-            }
-            const fullPrompt = buildPrompt(prompt, srsContext);
-            const { text: rawText, provider } = await callAI(fullPrompt);
-            setActiveProvider(provider);
-
-            const diagram = parseGeminiJson(rawText);
-            validateCells(diagram.cells);
-
-            setJsonResult(diagram);
-            saveToHistory(diagram, prompt, diagType);
-            setReasoningSteps(prev => [...prev, "✓ Diagram synthesized successfully."]);
-
-        } catch (err) {
-            setError(err.message);
-            clearInterval(stepInterval);
-        } finally {
-            setTimeout(() => setLoading(false), 800);
-        }
     };
 
     /* ── Toolbox → Canvas bridge ────────────────────────────────────────── */
@@ -760,37 +907,55 @@ const Dashboard = () => {
 
             {/* ── Node Panel (Col B + C) ─────────────────────────────────── */}
             {aiNodes.length > 0 && (
-                <div style={{
-                    width: '340px', flexShrink: 0,
-                    borderRight: `1px solid ${T.border}`,
-                    background: T.surface,
-                    display: 'flex', flexDirection: 'column',
-                    overflow: 'hidden',
-                }}>
+                <>
                     <div style={{
-                        padding: '7px 12px',
-                        borderBottom: `1px solid ${T.border}`,
-                        fontSize: '11px', fontWeight: '800',
-                        color: T.textSubtle,
+                        display: 'flex', flexShrink: 0,
+                        width: panelWidth,
+                        borderRight: `1px solid ${T.border}`,
                         background: T.surface,
-                        letterSpacing: '0.06em', textTransform: 'uppercase'
+                        flexDirection: 'column',
+                        overflow: 'hidden',
+                        transition: isResizingPanel ? 'none' : 'width 0.1s ease',
                     }}>
-                        🧠 AI Workspace — drag nodes, click connections
+                        <div style={{
+                            padding: '7px 12px',
+                            borderBottom: `1px solid ${T.border}`,
+                            fontSize: '11px', fontWeight: '800',
+                            color: T.textSubtle,
+                            background: T.surface,
+                            letterSpacing: '0.06em', textTransform: 'uppercase'
+                        }}>
+                            🧠 AI Workspace — drag nodes, click connections
+                        </div>
+                        <div style={{ flex: 1, overflow: 'hidden' }}>
+                            <NodePanel
+                                nodes={aiNodes}
+                                instructions={aiInstructions}
+                                placedNodeIds={placedNodeIds}
+                                connectedEdgeIds={connectedEdgeIds}
+                                onConnectInstruction={handleConnectInstruction}
+                                onDropAll={handleDropAll}
+                                isDark={isDark}
+                                T={T}
+                            />
+                        </div>
                     </div>
-                    <div style={{ flex: 1, overflow: 'hidden' }}>
-                        <NodePanel
-                            nodes={aiNodes}
-                            instructions={aiInstructions}
-                            placedNodeIds={placedNodeIds}
-                            connectedEdgeIds={connectedEdgeIds}
-                            onConnectInstruction={handleConnectInstruction}
-                            onDropAll={handleDropAll}
-                            isDark={isDark}
-                            T={T}
-                        />
-                    </div>
-                </div>
+
+                    {/* ── Vertical Resizer (Panel-wide) ── */}
+                    <div 
+                        onMouseDown={startResizingPanel}
+                        style={{
+                            width: '4px', cursor: 'col-resize',
+                            background: isResizingPanel ? T.accent : 'transparent',
+                            zIndex: 100, transition: 'background 0.2s',
+                            marginLeft: '-2px', marginRight: '-2px'
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.background = T.accent + '66'}
+                        onMouseLeave={e => !isResizingPanel && (e.currentTarget.style.background = 'transparent')}
+                    />
+                </>
             )}
+
 
 
             <main style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
@@ -829,6 +994,12 @@ const Dashboard = () => {
                     <TBtn title="Zoom In" onClick={() => canvasRef.current && canvasRef.current.zoomIn()}>+</TBtn>
                     <TBtn title="Fit diagram to viewport" onClick={() => canvasRef.current && canvasRef.current.fitContent()}>⊡ Fit</TBtn>
                     <TBtn title="Reset zoom to 100%" onClick={() => canvasRef.current && canvasRef.current.resetZoom()}>1:1</TBtn>
+
+                    <Sep />
+                    
+                    <TBtn title="Auto-align nodes to prevent overlap" onClick={() => canvasRef.current && canvasRef.current.autoLayout()}>
+                        ✨ Auto-Align
+                    </TBtn>
 
                     <Sep />
 
@@ -896,7 +1067,31 @@ const Dashboard = () => {
                         onZoomChange={setZoom}
                         onSelectionChange={handleSelectionChange}
                         onPositionUpdate={handlePositionUpdate}
+                        onHoverNode={handleHoverNode}
                     />
+
+                    {/* ── Semantic Requirement Inspector (Hover Overlay) ── */}
+                    {hoveredNodeInfo && (
+                        <div style={{
+                            position: 'absolute', bottom: '20px', left: '20px', right: '20px',
+                            background: isDark ? 'rgba(15,23,42,0.95)' : 'rgba(255,255,255,0.95)',
+                            backdropFilter: 'blur(8px)',
+                            border: `1px solid ${isDark ? '#334155' : '#e2e8f0'}`,
+                            borderRadius: '12px', padding: '12px 16px',
+                            boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
+                            zIndex: 1000, pointerEvents: 'none',
+                            maxWidth: '600px', margin: '0 auto',
+                            animation: 'fadeInUp 0.2s ease-out'
+                        }}>
+                            <div style={{ fontSize: '10px', color: '#6366f1', fontWeight: '800', textTransform: 'uppercase', marginBottom: '4px' }}>
+                                📖 Source Requirement
+                            </div>
+                            <div style={{ fontSize: '12px', color: T.text, lineHeight: '1.5', fontStyle: 'italic' }}>
+                                "{hoveredNodeInfo.desc}"
+                            </div>
+                        </div>
+                    )}
+
 
 
                     {/* ── History Sidebar ── */}
@@ -943,85 +1138,194 @@ const Dashboard = () => {
                         </div>
                     )}
 
-                    {/* ── Insights Sidebar (Right) ── */}
+                    {/* ── Insights + Chunk Inspector Sidebar (Right) ── */}
                     {showInsights && selectedSrs && selectedSrs !== 'None' && (
                         <div style={{
                             position: 'absolute', top: '14px', right: selectedShape ? '290px' : '14px',
-                            width: '280px', maxHeight: 'calc(100% - 28px)',
+                            width: '300px', maxHeight: 'calc(100% - 28px)',
                             background: T.surface, border: '1px solid ' + T.border, borderRadius: '16px',
-                            zIndex: 40, padding: '16px', boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
-                            display: 'flex', flexDirection: 'column', overflowY: 'auto'
+                            zIndex: 40, boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+                            display: 'flex', flexDirection: 'column', overflow: 'hidden'
                         }}>
-                            <h3 style={{ margin: '0 0 16px 0', fontSize: '14px', color: T.text, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <Cpu size={16} color={T.accent} /> SRS Audit Insights
-                            </h3>
-                            
-                            {/* Insights dynamically computed from SRS */}
-                            {SRS_SAMPLES[selectedSrs] && (() => {
-                                const srs = SRS_SAMPLES[selectedSrs];
-                                const stories = srs.user_stories || [];
-                                const actors = srs.actors || [];
-                                
-                                // Compute dynamic ambiguities/gaps from real data
-                                const systemGaps = [];
-                                const ambiguities = [];
-                                
-                                // Check for common missing actors
-                                const commonActors = ['admin', 'system', 'database', 'user'];
-                                const missingCommon = commonActors.filter(ca => !actors.some(a => a.toLowerCase().includes(ca)));
-                                if (missingCommon.length > 0 && actors.length > 0) {
-                                    systemGaps.push(`Consider defining roles for: ${missingCommon.join(', ')}.`);
-                                }
+                            {/* ── Tab Bar ── */}
+                            <div style={{ display: 'flex', borderBottom: '1px solid ' + T.border, flexShrink: 0 }}>
+                                {['SRS Audit', 'Chunk Inspector', 'Raw SRS'].map(tab => (
+                                    <button key={tab} onClick={() => setActiveInsightTab(tab)} style={{
+                                        flex: 1, padding: '10px 4px', border: 'none', cursor: 'pointer',
+                                        background: activeInsightTab === tab ? (isDark ? '#1e293b' : '#f1f5f9') : 'transparent',
+                                        color: activeInsightTab === tab ? T.accent : T.textMuted,
+                                        fontSize: '10px', fontWeight: '700', textTransform: 'uppercase',
+                                        letterSpacing: '0.05em',
+                                        borderBottom: activeInsightTab === tab ? `2px solid ${T.accent}` : '2px solid transparent',
+                                        transition: 'all 0.15s'
+                                    }}>
+                                        {tab}
+                                    </button>
+                                ))}
+                            </div>
 
-                                // Check for vague terms in goals
-                                const vagueTerms = ['manage', 'handle', 'process', 'do'];
-                                stories.forEach(st => {
-                                    if (st.goal) {
-                                        const foundVague = vagueTerms.find(vt => st.goal.toLowerCase().includes(vt));
-                                        if (foundVague) {
-                                            ambiguities.push({
-                                                requirement: `US${st.id?.replace('US', '') || ''}: ${st.role}`,
-                                                issue: `Goal uses vague term "${foundVague}". Specify exactly what data is modified.`
-                                            });
+                            <div style={{ padding: '14px', overflowY: 'auto', flex: 1 }}>
+
+                                {/* ── TAB 1: SRS Audit ── */}
+                                {activeInsightTab === 'SRS Audit' && SRS_SAMPLES[selectedSrs] && (() => {
+                                    const srs = SRS_SAMPLES[selectedSrs];
+                                    const stories = srs.user_stories || [];
+                                    const actors = srs.actors || [];
+                                    const systemGaps = [];
+                                    const ambiguities = [];
+                                    const commonActors = ['admin', 'system', 'database', 'user'];
+                                    const missingCommon = commonActors.filter(ca => !actors.some(a => a.toLowerCase().includes(ca)));
+                                    if (missingCommon.length > 0 && actors.length > 0) {
+                                        systemGaps.push(`Consider defining roles for: ${missingCommon.join(', ')}.`);
+                                    }
+                                    const vagueTerms = ['manage', 'handle', 'process', 'do'];
+                                    stories.forEach(st => {
+                                        if (st.goal) {
+                                            const foundVague = vagueTerms.find(vt => st.goal.toLowerCase().includes(vt));
+                                            if (foundVague) ambiguities.push({ requirement: `${st.id}: ${st.role}`, issue: `Vague term "${foundVague}" — specify exactly what data is modified.` });
                                         }
-                                    }
-                                    if (!st.acceptance_criteria || st.acceptance_criteria.length === 0) {
-                                        ambiguities.push({
-                                            requirement: `US${st.id?.replace('US', '') || ''}: ${st.role}`,
-                                            issue: `Missing acceptance criteria. Testing will be difficult.`
-                                        });
-                                    }
-                                });
-
-                                // Fallbacks if everything is perfect
-                                if (ambiguities.length === 0) ambiguities.push({ requirement: "Overall SRS", issue: "Requirements seem well-defined. Ensure edge cases are handled." });
-                                if (systemGaps.length === 0) systemGaps.push("All core actors seem to be represented.");
-
-                                return (
-                                    <>
-                                        <div style={{ marginBottom: '16px' }}>
-                                            <div style={{ fontSize: '11px', fontWeight: '700', color: T.textSubtle, marginBottom: '8px', textTransform: 'uppercase' }}>Ambiguities Found</div>
+                                        if (!st.acceptance_criteria || st.acceptance_criteria.length === 0) {
+                                            ambiguities.push({ requirement: `${st.id}: ${st.role}`, issue: 'Missing acceptance criteria.' });
+                                        }
+                                    });
+                                    if (ambiguities.length === 0) ambiguities.push({ requirement: 'Overall SRS', issue: 'Requirements seem well-defined.' });
+                                    if (systemGaps.length === 0) systemGaps.push('All core actors seem to be represented.');
+                                    return (
+                                        <>
+                                            <div style={{ fontSize: '11px', fontWeight: '800', color: T.textSubtle, marginBottom: '8px', textTransform: 'uppercase' }}>Ambiguities ({ambiguities.length})</div>
                                             {ambiguities.slice(0, 4).map((a, i) => (
                                                 <div key={i} style={{ padding: '8px', borderRadius: '8px', background: T.surfaceAlt, marginBottom: '6px', fontSize: '11px', borderLeft: '3px solid ' + T.accent }}>
                                                     <div style={{ fontWeight: '700', color: T.text }}>{a.requirement}</div>
                                                     <div style={{ color: T.textSubtle, marginTop: '2px' }}>{a.issue}</div>
                                                 </div>
                                             ))}
-                                        </div>
-
-                                        <div>
-                                            <div style={{ fontSize: '11px', fontWeight: '700', color: T.textSubtle, marginBottom: '8px', textTransform: 'uppercase' }}>System Gaps</div>
+                                            <div style={{ fontSize: '11px', fontWeight: '800', color: T.textSubtle, marginBottom: '8px', marginTop: '14px', textTransform: 'uppercase' }}>System Gaps</div>
                                             {systemGaps.slice(0, 2).map((g, i) => (
                                                 <div key={i} style={{ padding: '10px', borderRadius: '8px', background: T.okBg, border: '1px solid ' + T.okBorder, fontSize: '11px', color: T.okText, marginBottom: '6px' }}>
-                                                    AI Suggestion: {g}
+                                                    {g}
                                                 </div>
                                             ))}
+                                        </>
+                                    );
+                                })()}
+
+                                {/* ── TAB 2: Chunk Inspector ── */}
+                                {activeInsightTab === 'Chunk Inspector' && (
+                                    <div>
+                                        <div style={{ fontSize: '10px', color: T.textMuted, marginBottom: '10px', lineHeight: '1.5' }}>
+                                            Chunks parsed from <code style={{ color: T.accent }}>_clean.md</code> for <strong>{selectedSrs}</strong>.
+                                            Open DevTools → Console to see retrieval logs per generation.
                                         </div>
-                                    </>
-                                );
-                            })()}
+                                        <button
+                                            onClick={async () => {
+                                                const DOC_ID_MAP = {
+                                                    'Logbook Stories':  '1_Logbook_User_Stories',
+                                                    'Bhavika Gondi SRS': '2_SRS Doc_BHAVIKA GONDI',
+                                                    'Sreeram R SRS':    '3_SRS_Grp6_SREERAM R',
+                                                    'MediCore HMS':     '4_MediCore_HMS_SRS',
+                                                    'SE Group SRS':     '5_SE_grp_',
+                                                };
+                                                const docId = DOC_ID_MAP[selectedSrs];
+                                                if (!docId) { setChunkPreview({ error: 'No doc_id mapping for this SRS. Use a live-uploaded PDF.' }); return; }
+                                                try {
+                                                    const res = await fetch(`http://localhost:8000/api/document/${encodeURIComponent(docId)}/chunks`);
+                                                    const data = await res.json();
+                                                    setChunkPreview(data);
+                                                } catch (e) {
+                                                    setChunkPreview({ error: 'Backend offline or doc not found: ' + e.message });
+                                                }
+                                            }}
+                                            style={{
+                                                width: '100%', padding: '8px', borderRadius: '8px',
+                                                background: T.accent, color: '#fff', border: 'none',
+                                                fontSize: '11px', fontWeight: '700', cursor: 'pointer', marginBottom: '10px'
+                                            }}
+                                        >
+                                            🔍 Load Chunks from Backend
+                                        </button>
+
+                                        {chunkPreview?.error && (
+                                            <div style={{ padding: '10px', borderRadius: '8px', background: T.errBg, border: '1px solid ' + T.errBorder, fontSize: '11px', color: T.errText }}>
+                                                ⚠ {chunkPreview.error}
+                                            </div>
+                                        )}
+
+                                        {chunkPreview?.chunks && (
+                                            <>
+                                                <div style={{ fontSize: '10px', color: T.textMuted, marginBottom: '8px' }}>
+                                                    ✅ {chunkPreview.total_chunks} chunks found
+                                                </div>
+                                                {chunkPreview.chunks.map((c, i) => (
+                                                    <div key={i} style={{
+                                                        padding: '10px', borderRadius: '8px', marginBottom: '6px',
+                                                        background: T.surfaceAlt, border: '1px solid ' + T.border,
+                                                        fontSize: '11px'
+                                                    }}>
+                                                        <div style={{ fontWeight: '800', color: T.text, marginBottom: '3px' }}>
+                                                            <span style={{ color: T.accent }}>[{c.category}]</span> {c.heading}
+                                                        </div>
+                                                        <div style={{ display: 'flex', gap: '8px', color: T.textMuted, fontSize: '10px' }}>
+                                                            {c.math?.length > 0 && <span>📐 {c.math.length} math</span>}
+                                                            {c.figures?.length > 0 && <span>🖼 {c.figures.length} figures</span>}
+                                                            {c.story_ids?.length > 0 && <span>📋 {c.story_ids.join(', ')}</span>}
+                                                        </div>
+                                                        <div style={{ color: T.textSubtle, fontSize: '10px', marginTop: '4px', lineHeight: '1.4',
+                                                            maxHeight: '40px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                                            {c.body?.substring(0, 100)}…
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </>
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* ── TAB 3: Raw SRS Paste ── */}
+                                {activeInsightTab === 'Raw SRS' && (
+                                    <div>
+                                        <div style={{ fontSize: '10px', color: T.textMuted, marginBottom: '8px', lineHeight: '1.5' }}>
+                                            Paste raw markdown here to preview how it will be chunked by the semantic engine.
+                                            This is a <strong>client-side preview only</strong> — upload a PDF to process it fully through the pipeline.
+                                        </div>
+                                        <textarea
+                                            placeholder="Paste _clean.md content here to preview chunking..."
+                                            rows={12}
+                                            style={{
+                                                width: '100%', resize: 'vertical', padding: '10px',
+                                                borderRadius: '8px', border: '1px solid ' + T.border,
+                                                background: T.inputBg, color: T.text,
+                                                fontSize: '11px', fontFamily: 'monospace',
+                                                boxSizing: 'border-box'
+                                            }}
+                                            onChange={e => {
+                                                const text = e.target.value;
+                                                const sections = text.split(/^#{1,3}\s+/m).filter(Boolean);
+                                                setRawSrsPreview(sections.length > 0 ? sections : null);
+                                            }}
+                                        />
+                                        {rawSrsPreview && (
+                                            <div style={{ marginTop: '10px' }}>
+                                                <div style={{ fontSize: '10px', color: T.textMuted, marginBottom: '6px' }}>
+                                                    Preview: {rawSrsPreview.length} chunks detected
+                                                </div>
+                                                {rawSrsPreview.slice(0, 5).map((s, i) => (
+                                                    <div key={i} style={{
+                                                        padding: '8px', borderRadius: '8px', marginBottom: '4px',
+                                                        background: T.surfaceAlt, fontSize: '10px', color: T.textSubtle,
+                                                        borderLeft: `3px solid ${T.accent}`
+                                                    }}>
+                                                        {s.split('\n')[0].trim().substring(0, 60)}…
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                            </div>
                         </div>
                     )}
+
 
                     {/* ── Reasoning Terminal (Loading state) ── */}
                     {loading && (

@@ -70,6 +70,7 @@ def cleanup_progress_store():
 
 def run_pipeline_background(doc_id: str, pdf_path: Path):
     from run_corpus_processor import process_pdf
+    import threading
     
     def progress_callback(stage: str, message: str, percent: int):
         PROGRESS_STORE[doc_id] = {
@@ -79,12 +80,22 @@ def run_pipeline_background(doc_id: str, pdf_path: Path):
             "percent": percent,
             "updated_at": time.time()
         }
+
+    def status_logger():
+        while doc_id in PROGRESS_STORE and PROGRESS_STORE[doc_id]["status"] == "processing":
+            state = PROGRESS_STORE[doc_id]
+            logger.info(f"[Monitor] doc={doc_id} | Stage: {state['stage']} | {state['percent']}% | {state['message']}")
+            time.sleep(5)
+
+    # Start the 5-second periodic logger
+    threading.Thread(target=status_logger, daemon=True).start()
     
     try:
         process_pdf(pdf_path, max_stage=6, debug=False, progress_callback=progress_callback)
         if doc_id in PROGRESS_STORE:
             PROGRESS_STORE[doc_id]["status"] = "done"
             PROGRESS_STORE[doc_id]["updated_at"] = time.time()
+            logger.info(f"[Monitor] doc={doc_id} | Pipeline complete.")
     except Exception as e:
         logger.error(f"Pipeline failed for {doc_id}: {e}")
         PROGRESS_STORE[doc_id] = {
@@ -131,6 +142,32 @@ async def upload_pdf(background_tasks: BackgroundTasks, file: UploadFile = File(
         "filename": file.filename,
         "status": "processing"
     })
+
+@app.post("/api/upload-readme")
+async def upload_readme(file: UploadFile = File(...)):
+    """Upload a README/Markdown file and bypass OCR, going straight to chunking."""
+    if not file.filename or not file.filename.lower().endswith((".md", ".txt")):
+        raise HTTPException(status_code=400, detail="Only .md or .txt files are accepted")
+    
+    doc_id = get_doc_id(file.filename)
+    
+    # Save uploaded Markdown as a clean MD in stage 3
+    stage3_dir = PROCESSED_ROOT / "stage3_cleaned_md"
+    stage3_dir.mkdir(parents=True, exist_ok=True)
+    md_path = stage3_dir / f"{doc_id}_clean.md"
+    
+    content = await file.read()
+    with open(md_path, "wb") as f:
+        f.write(content)
+        
+    logger.info(f"Uploaded README: {file.filename} → saved to {md_path}")
+    
+    return JSONResponse({
+        "doc_id": doc_id,
+        "filename": file.filename,
+        "status": "done"
+    })
+
 
 
 @app.get("/api/document/{doc_id}/status")
@@ -279,3 +316,53 @@ async def delete_document(doc_id: str):
     PROGRESS_STORE.pop(doc_id, None)
     return {"doc_id": doc_id, "deleted": len(deleted_files)}
 
+
+# ─────────────────────────────────────────────────────────────────────
+# PHASE 1: Semantic Chunk Endpoints — power the Multi-Pass Prompt Engine
+# ─────────────────────────────────────────────────────────────────────
+
+from document_chunker import get_chunks, get_relevant_chunks
+from pydantic import BaseModel
+
+
+class ChunkSearchRequest(BaseModel):
+    query: str
+    top_k: int = 4
+
+
+@app.get("/api/document/{doc_id}/chunks")
+async def get_document_chunks(doc_id: str):
+    """
+    Phase 1 — Semantic Chunker:
+    Returns all semantic chunks parsed from the _clean.md for a document.
+    Each chunk contains: heading, level, category, body, math[], figures[], story_ids[].
+    """
+    chunks = get_chunks(doc_id, PROCESSED_ROOT)
+    if not chunks:
+        raise HTTPException(status_code=404, detail=f"No _clean.md found for '{doc_id}'")
+    return {
+        "doc_id": doc_id,
+        "total_chunks": len(chunks),
+        "chunks": chunks
+    }
+
+
+@app.post("/api/document/{doc_id}/chunks/search")
+async def search_document_chunks(doc_id: str, req: ChunkSearchRequest):
+    """
+    Phase 1 — Contextual Chunk Retrieval:
+    Given a user's diagram prompt (e.g. 'Create use case diagram for Authentication'),
+    returns the top-k most semantically relevant chunks from the _clean.md.
+
+    Relevance is scored by keyword overlap + math/figure boost (no embedding needed).
+    These chunks are injected into the LLM prompt context window by the frontend.
+    """
+    relevant = get_relevant_chunks(doc_id, req.query, PROCESSED_ROOT, top_k=req.top_k)
+    if not relevant:
+        raise HTTPException(status_code=404, detail=f"No chunks found for '{doc_id}'")
+    return {
+        "doc_id": doc_id,
+        "query": req.query,
+        "retrieved": len(relevant),
+        "chunks": relevant
+    }

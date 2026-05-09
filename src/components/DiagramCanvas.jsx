@@ -206,7 +206,7 @@ const makeLinkTools = () =>
 /* ═══════════════════════════════════════════════════════════════════════════
    DiagramCanvas component
 ═══════════════════════════════════════════════════════════════════════════ */
-const DiagramCanvas = forwardRef(function DiagramCanvas({ data, darkMode, snapGrid, onZoomChange, onSelectionChange, onPositionUpdate }, ref) {
+const DiagramCanvas = forwardRef(function DiagramCanvas({ data, darkMode, snapGrid, onZoomChange, onSelectionChange, onPositionUpdate, onHoverNode }, ref) {
     const wrapperRef  = useRef(null);
     const paperRef    = useRef(null);
     const graphRef    = useRef(null);
@@ -215,6 +215,7 @@ const DiagramCanvas = forwardRef(function DiagramCanvas({ data, darkMode, snapGr
     const panningRef  = useRef(false);
     const panStartRef = useRef({ x: 0, y: 0 });
     const panTransRef = useRef({ tx: 0, ty: 0 });
+    const positionStore = useRef({}); // Track placed nodes for instructions
 
     /* ── 1. Mount: create Paper + Graph ──────────────────────────────────── */
     useEffect(() => {
@@ -259,11 +260,11 @@ const DiagramCanvas = forwardRef(function DiagramCanvas({ data, darkMode, snapGr
             background:        { color: '#f9fafb' },
             interactive:       true,
             cellViewNamespace: joint.shapes,
-            defaultRouter:     { name: 'normal' },
-            defaultConnector:  { name: 'normal' },
+            defaultRouter:     { name: 'manhattan', args: { padding: 20 } },
+            defaultConnector:  { name: 'rounded' },
             defaultLink: function() {
                 return new joint.shapes.standard.Link({
-                    attrs: { line: { stroke: '#6b7280', strokeWidth: 1.5, targetMarker: { type: 'arrow', size: 8 } } },
+                    attrs: { line: { stroke: '#6366f1', strokeWidth: 2, targetMarker: { type: 'arrow', size: 10 } } },
                 });
             },
             defaultConnectionPoint: { name: 'boundary' },
@@ -278,6 +279,33 @@ const DiagramCanvas = forwardRef(function DiagramCanvas({ data, darkMode, snapGr
                 return !!vT && vS !== vT;
             },
         });
+
+        /* ── Hover Highlights & Details ────────────────────────────────── */
+        paper.on('cell:mouseenter', function(cellView) {
+            var cell = cellView.model;
+            if (cell.isLink()) return;
+            
+            // Apply Glow
+            joint.highlighters.mask.add(cellView, 'body', 'node-glow', {
+                padding: 3,
+                attrs: {
+                    'stroke': '#6366f1',
+                    'stroke-width': 3,
+                    'stroke-opacity': 0.6
+                }
+            });
+
+            if (onHoverNode) {
+                var desc = cell.get('fullDescription') || cell.attr('label/text') || '';
+                onHoverNode(cell.id, desc);
+            }
+        });
+
+        paper.on('cell:mouseleave', function(cellView) {
+            joint.highlighters.mask.remove(cellView, 'node-glow');
+            if (onHoverNode) onHoverNode(null, null);
+        });
+
 
         /* ── Mouse-wheel zoom toward cursor ─────────────────────────────── */
         var onWheel = function(evt) {
@@ -362,6 +390,19 @@ const DiagramCanvas = forwardRef(function DiagramCanvas({ data, darkMode, snapGr
                 onSelectionChange({ id: cv.model.id, type: cv.model.get('type'), width: sz.width, height: sz.height, x: ps.x, y: ps.y, label: lbl });
             }
         });
+
+        /* Real-time position tracking for HITL sidebars */
+        const reportPositions = () => {
+            if (!onPositionUpdate) return;
+            const posMap = {};
+            graph.getElements().forEach(el => {
+                posMap[el.id] = el.position();
+            });
+            onPositionUpdate(posMap);
+        };
+
+        paper.on('element:pointermove', reportPositions);
+        paper.on('element:pointerup', reportPositions);
         paper.on('link:pointerdown', function(lv) {
             selectedRef.current = lv.model;
             if (onSelectionChange) onSelectionChange(null);
@@ -683,9 +724,6 @@ const DiagramCanvas = forwardRef(function DiagramCanvas({ data, darkMode, snapGr
 
     /* ── 5. Expose imperative API to Dashboard ───────────────────────────── */
 
-    // Real-time position store — keyed by cell.id
-    var positionStore = useRef({});
-
     // Broadcast position changes to Dashboard
     React.useEffect(function() {
         var graph = graphRef.current;
@@ -757,6 +795,72 @@ const DiagramCanvas = forwardRef(function DiagramCanvas({ data, darkMode, snapGr
             },
             redo: function() {
                 if (cmdMgrRef.current) cmdMgrRef.current.redo();
+            },
+            getGraphJSON: function() {
+                var graph = graphRef.current;
+                return graph ? graph.toJSON() : null;
+            },
+            loadGraph: function(jsonObj) {
+                var graph = graphRef.current;
+                if (!graph) return;
+                graph.fromJSON(jsonObj);
+            },
+            /**
+             * spawnNode — Place an AI-extracted node onto the canvas.
+             * Uses node.jointType (from UML_STANDARD_MAP cross-check) for the shape.
+             * Falls back to uml.UseCase if jointType is missing.
+             */
+            spawnNode: function(node, x, y) {
+                var graph = graphRef.current;
+                if (!graph) return;
+                // Don't re-add if already on canvas
+                if (graph.getCell(node.id)) return;
+                var type     = node.jointType || 'uml.UseCase';
+                var label    = node.label || 'Entity';
+                var defSize  = DEFAULT_SIZES[type] || { width: 160, height: 60 };
+                // Expand width for long labels
+                var charW    = 8.5;
+                var textLen  = label.length;
+                var estWidth = Math.max(defSize.width, textLen * charW + 60);
+                var el = buildElement({
+                    id:       node.id,
+                    type:     type,
+                    position: { x: x || 100, y: y || 100 },
+                    size:     { width: Math.round(estWidth), height: defSize.height },
+                    attrs:    { label: { text: label } },
+                });
+                applyTheme(el, darkMode);
+                graph.addCell(el);
+                if (type === 'uml.SystemBoundary') el.toBack();
+                console.log('[Canvas] spawnNode', node.id, type, 'at', x, y);
+            },
+            /**
+             * drawConnection — Draw a bendable link between two nodes by their IDs.
+             * Returns true on success, false if either node is not yet on canvas.
+             */
+            drawConnection: function(fromId, toId, label, edgeId) {
+                var graph = graphRef.current;
+                if (!graph) return false;
+                var src = graph.getCell(fromId);
+                var tgt = graph.getCell(toId);
+                if (!src || !tgt) {
+                    console.warn('[Canvas] drawConnection — node not on canvas:', fromId, '->', toId);
+                    return false;
+                }
+                // Avoid duplicate edges
+                if (edgeId && graph.getCell(edgeId)) return true;
+                var link = new joint.shapes.standard.Link({
+                    id:     edgeId || ('link-' + fromId + '-' + toId),
+                    source: { id: fromId },
+                    target: { id: toId },
+                    attrs:  { line: { stroke: darkMode ? '#60a5fa' : '#2563eb', strokeWidth: 1.5, targetMarker: { type: 'arrow', size: 8 } } },
+                    labels: label ? [{ position: 0.5, attrs: { text: { text: label, fontSize: 10, fill: darkMode ? '#94a3b8' : '#475569' } } }] : [],
+                });
+                link.connector('rounded');
+                link.router('manhattan', { padding: 20 });
+                graph.addCell(link);
+                console.log('[Canvas] drawConnection', fromId, '->', toId, label);
+                return true;
             },
             resizeShape: function(cellId, w, h) {
                 var graph = graphRef.current;
@@ -899,35 +1003,37 @@ const DiagramCanvas = forwardRef(function DiagramCanvas({ data, darkMode, snapGr
                 if (onPositionUpdate) onPositionUpdate({});
             },
 
-            /* ── Human-in-the-Loop: draw a bendable bezier connection ── */
+            /* ── Human-in-the-Loop: draw a smart connection ── */
             drawConnection: function(fromId, toId, label, edgeId) {
                 var graph = graphRef.current;
                 if (!graph) return false;
                 var fromCell = graph.getCell(fromId);
                 var toCell   = graph.getCell(toId);
                 if (!fromCell || !toCell) return false;
-                // Don't duplicate
+                
                 var existing = graph.getLinks().find(function(l) {
                     return (l.get('source').id === fromId && l.get('target').id === toId) ||
                            (l.id === edgeId);
                 });
                 if (existing) return true;
+
                 var link = new joint.shapes.standard.Link({
                     id: edgeId || ('e-' + fromId + '-' + toId),
                     source: { id: fromId },
                     target: { id: toId },
-                    connector: { name: 'smooth' },
+                    router: { name: 'manhattan', args: { padding: 20 } },
+                    connector: { name: 'rounded' },
                     attrs: {
                         line: {
                             stroke: '#6366f1',
                             strokeWidth: 2,
-                            targetMarker: { type: 'arrow', size: 8 }
+                            targetMarker: { type: 'arrow', size: 10 }
                         }
                     },
                     labels: label ? [{
                         attrs: {
-                            text: { text: label, fontSize: 10, fill: '#6366f1', fontWeight: '600' },
-                            rect: { fill: 'white', stroke: '#e0e7ff', rx: 4, ry: 4, refWidth: '110%', refHeight: '130%', refX: '-5%', refY: '-15%' }
+                            text: { text: label, fontSize: 10, fill: '#6366f1', fontWeight: '700' },
+                            rect: { fill: 'white', stroke: '#6366f1', rx: 5, ry: 5, refWidth: '120%', refHeight: '120%', refX: '-10%', refY: '-10%' }
                         },
                         position: 0.5
                     }] : []
@@ -936,35 +1042,64 @@ const DiagramCanvas = forwardRef(function DiagramCanvas({ data, darkMode, snapGr
                 return true;
             },
 
+            /* Auto-align all elements to prevent overlap */
+            autoLayout: function() {
+                var graph = graphRef.current;
+                if (!graph) return;
+                var elements = graph.getElements();
+                if (elements.length === 0) return;
+
+                var startX = 100, startY = 100;
+                var paddingX = 120, paddingY = 80;
+                var currentX = startX, currentY = startY;
+                var maxRowHeight = 0;
+                var maxWidth = wrapperRef.current ? wrapperRef.current.offsetWidth - 300 : 1000;
+
+                elements.forEach(function(el) {
+                    var size = el.size();
+                    if (currentX + size.width > maxWidth) {
+                        currentX = startX;
+                        currentY += maxRowHeight + paddingY;
+                        maxRowHeight = 0;
+                    }
+                    el.position(currentX, currentY);
+                    
+                    // Update store
+                    positionStore.current[el.id] = { x: currentX, y: currentY, w: size.width, h: size.height };
+
+                    currentX += size.width + paddingX;
+                    maxRowHeight = Math.max(maxRowHeight, size.height);
+                });
+                if (onPositionUpdate) onPositionUpdate({ ...positionStore.current });
+            },
+
+
             /* ── Human-in-the-Loop: spawn a node chip from the panel ── */
             spawnNode: function(nodeData, x, y) {
                 var graph = graphRef.current;
                 if (!graph) return;
-                // Check if already on canvas
                 if (graph.getCell(nodeData.id)) return;
+                
+                var jointType = nodeData.jointType || 'standard.Rectangle';
                 var cellDef = {
                     id: nodeData.id,
-                    type: nodeData.jointType || 'standard.Rectangle',
+                    type: jointType,
                     position: { x: x || 100, y: y || 100 },
-                    size: DEFAULT_SIZES[nodeData.jointType] || { width: 160, height: 60 },
+                    size: DEFAULT_SIZES[jointType] || { width: 160, height: 60 },
                     attrs: { label: { text: nodeData.label } }
                 };
                 var el = buildElement(cellDef);
+                el.set('fullDescription', nodeData.fullDescription);
                 applyTheme(el, darkMode);
+
                 graph.addCell(el);
-                // Register initial position
+                
                 var pos = el.position();
-                var size = el.size();
-                positionStore.current[el.id] = {
-                    x: pos.x, y: pos.y,
-                    cx: pos.x + size.width / 2,
-                    cy: pos.y + size.height / 2,
-                    w: size.width, h: size.height
-                };
+                var sz = el.size();
+                positionStore.current[el.id] = { x: pos.x, y: pos.y, w: sz.width, h: sz.height };
                 if (onPositionUpdate) onPositionUpdate({ ...positionStore.current });
             },
 
-            /* Get current placed IDs */
             getPlacedIds: function() {
                 return new Set(Object.keys(positionStore.current));
             },
@@ -992,26 +1127,24 @@ const DiagramCanvas = forwardRef(function DiagramCanvas({ data, darkMode, snapGr
                         x = (e.clientX - rect.left - t.tx) / sc - 80;
                         y = (e.clientY - rect.top  - t.ty) / sc - 40;
                     }
-                    // Call spawnNode via the internal ref pattern
+                    
                     var graph = graphRef.current;
                     if (graph && !graph.getCell(nodeData.id)) {
+                        var jointType = nodeData.jointType || 'standard.Rectangle';
                         var cellDef = {
                             id: nodeData.id,
-                            type: nodeData.jointType || 'standard.Rectangle',
+                            type: jointType,
                             position: { x: Math.max(10, x), y: Math.max(10, y) },
-                            size: DEFAULT_SIZES[nodeData.jointType] || { width: 160, height: 60 },
+                            size: DEFAULT_SIZES[jointType] || { width: 160, height: 60 },
                             attrs: { label: { text: nodeData.label } }
                         };
                         var el = buildElement(cellDef);
                         applyTheme(el, darkMode);
                         graph.addCell(el);
+                        
                         var pos = el.position();
                         var sz  = el.size();
-                        positionStore.current[el.id] = {
-                            x: pos.x, y: pos.y,
-                            cx: pos.x + sz.width / 2, cy: pos.y + sz.height / 2,
-                            w: sz.width, h: sz.height
-                        };
+                        positionStore.current[el.id] = { x: pos.x, y: pos.y, w: sz.width, h: sz.height };
                         if (onPositionUpdate) onPositionUpdate({ ...positionStore.current });
                     }
                 } catch(err) { console.warn('Drop parse error:', err); }
